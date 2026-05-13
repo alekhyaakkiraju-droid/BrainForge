@@ -1,0 +1,20 @@
+{
+  "name": "brainforge-firestore-rules-tests",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Firestore security rules unit tests for BrainForge",
+  "scripts": {
+    "test": "mocha --timeout 15000 --exit tests/*.test.js",
+    "test:ci": "mocha --timeout 15000 --exit --reporter spec tests/*.test.js"
+  },
+  "dependencies": {
+    "@firebase/rules-unit-testing": "^3.0.3",
+    "firebase-admin": "^12.3.0"
+  },
+  "devDependencies": {
+    "mocha": "^10.7.0"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

@@ -123,10 +123,6 @@ jobs:
 
       - name: Deploy Firestore rules + indexes to staging
         run: |
-          if [ -f "firestore.rules" ]; then
-            firebase deploy --only firestore \
-              --project brainforge-staging \
-              --token "${{ secrets.FIREBASE_CLI_TOKEN }}"
-          else
-            echo "No Firestore rules yet — skipping (added in WO-007)"
-          fi
+          firebase deploy --only firestore \
+            --project brainforge-staging \
+            --token "${{ secrets.FIREBASE_CLI_TOKEN }}"

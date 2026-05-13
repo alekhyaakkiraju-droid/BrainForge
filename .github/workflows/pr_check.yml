@@ -64,30 +64,33 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Set up Java (required by Firebase emulator)
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
           node-version: "20"
-          # No cache-dependency-path — firestore-rules-tests/ is added in WO-007
+          cache: npm
+          cache-dependency-path: firestore-rules-tests/package-lock.json
 
       - name: Install Firebase CLI
         run: npm install -g firebase-tools
 
       - name: Install rules test dependencies
-        run: |
-          if [ -d "firestore-rules-tests" ]; then
-            cd firestore-rules-tests && npm ci
-          else
-            echo "No Firestore rules tests yet — skipping (added in WO-007)"
-          fi
+        working-directory: firestore-rules-tests
+        run: npm ci
 
-      - name: Run Firestore rules tests
+      - name: Run Firestore rules tests against emulator
+        working-directory: firestore-rules-tests
         run: |
-          if [ -d "firestore-rules-tests" ]; then
-            cd firestore-rules-tests && npm test
-          else
-            echo "Skipped — Firestore rules tests added in WO-007"
-          fi
+          firebase emulators:exec \
+            --only firestore \
+            --project brainforge-test \
+            'npm run test:ci'
 
   dependency-audit:
     name: Dependency Audit
