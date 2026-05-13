@@ -56,6 +56,5 @@ class FirestoreQuestRepository implements QuestRepository {
       );
 }
 
-final questRepositoryProvider = Provider<QuestRepository>((ref) {
-  return FirestoreQuestRepository(ref.watch(firestoreProvider));
-});
+final questRepositoryProvider = Provider<QuestRepository>((ref) =>
+    FirestoreQuestRepository(ref.watch(firestoreProvider)));
