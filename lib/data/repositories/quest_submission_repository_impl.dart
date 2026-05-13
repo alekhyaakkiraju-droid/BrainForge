@@ -57,6 +57,5 @@ class FirestoreQuestSubmissionRepository
 }
 
 final questSubmissionRepositoryProvider =
-    Provider<QuestSubmissionRepository>((ref) {
-  return FirestoreQuestSubmissionRepository(ref.watch(firestoreProvider));
-});
+    Provider<QuestSubmissionRepository>((ref) =>
+    FirestoreQuestSubmissionRepository(ref.watch(firestoreProvider)));
