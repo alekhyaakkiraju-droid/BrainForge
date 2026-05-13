@@ -9,7 +9,6 @@ final appLogger = Logger(
     methodCount: 2,
     errorMethodCount: 8,
     lineLength: 80,
-    colors: true,
     printEmojis: true,
   ),
 );

@@ -16,7 +16,9 @@ Future<void> main() async {
     DeviceOrientation.landscapeRight,
   ]);
 
-  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
 
   runApp(const ProviderScope(child: BrainForgeApp()));
 }
@@ -33,7 +35,6 @@ class BrainForgeApp extends ConsumerWidget {
       debugShowCheckedModeBanner: false,
       theme: AppTheme.light(),
       darkTheme: AppTheme.dark(),
-      themeMode: ThemeMode.system,
       routerConfig: router,
     );
   }

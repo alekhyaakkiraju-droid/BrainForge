@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
@@ -18,17 +17,14 @@ abstract final class AppRoutes {
 final appRouterProvider = Provider<GoRouter>(
   (ref) => GoRouter(
     initialLocation: AppRoutes.splash,
-    debugLogDiagnostics: false,
     routes: [
       GoRoute(
         path: AppRoutes.splash,
-        builder: (BuildContext context, GoRouterState state) =>
-            const SplashScreen(),
+        builder: (context, state) => const SplashScreen(),
       ),
       GoRoute(
         path: AppRoutes.home,
-        builder: (BuildContext context, GoRouterState state) =>
-            const HomeScreen(),
+        builder: (context, state) => const HomeScreen(),
       ),
     ],
   ),

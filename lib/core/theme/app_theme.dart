@@ -105,6 +105,7 @@ abstract final class AppTheme {
         cardTheme: _cardTheme(),
       );
 
+
   static TextTheme _textTheme(Color onBackground) => TextTheme(
         displayLarge: AppTextStyles.displayLarge.copyWith(color: onBackground),
         displayMedium:

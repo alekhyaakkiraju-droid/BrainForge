@@ -85,7 +85,6 @@ linter:
     - no_leading_underscores_for_library_prefixes
     - no_leading_underscores_for_local_identifiers
     - no_logic_in_create_state
-    - no_runtimetype_tostring
     - non_constant_identifier_names
     - null_check_on_nullable_type_parameter
     - null_closures

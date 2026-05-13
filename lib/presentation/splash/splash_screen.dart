@@ -49,7 +49,11 @@ class _SplashScreenState extends State<SplashScreen>
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                const Icon(Icons.psychology_rounded, size: 80, color: Colors.white),
+                const Icon(
+                  Icons.psychology_rounded,
+                  size: 80,
+                  color: Colors.white,
+                ),
                 const SizedBox(height: 16),
                 Text(
                   'BrainForge',
