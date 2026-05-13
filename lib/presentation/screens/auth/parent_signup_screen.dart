@@ -70,14 +70,15 @@ class _ParentSignupScreenState extends ConsumerState<ParentSignupScreen> {
   @override
   Widget build(BuildContext context) => Scaffold(
         backgroundColor: AppColors.primary,
-        body: Center(
-          child: ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 440),
-            child: Padding(
-              padding: const EdgeInsets.all(AppSpacing.xl),
-              child: Form(
-                key: _formKey,
-                child: Column(
+        body: SingleChildScrollView(
+          child: Center(
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 440),
+              child: Padding(
+                padding: const EdgeInsets.all(AppSpacing.xl),
+                child: Form(
+                  key: _formKey,
+                  child: Column(
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
@@ -160,7 +161,8 @@ class _ParentSignupScreenState extends ConsumerState<ParentSignupScreen> {
             ),
           ),
         ),
-      );
+      ),
+    );
 }
 
 class _EmailField extends StatelessWidget {

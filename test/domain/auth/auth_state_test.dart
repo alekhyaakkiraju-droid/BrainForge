@@ -32,7 +32,8 @@ void main() {
 
   test('initial state is AuthStatus.unknown', () {
     // ignore: unnecessary_lambdas
-    when(() => auth.authStateChanges()).thenReturn(const Stream.empty());
+    when(() => auth.authStateChanges())
+        .thenAnswer((_) => const Stream.empty());
     final notifier = AuthStateNotifier(auth, firestore);
     expect(notifier.state.status, AuthStatus.unknown);
     notifier.dispose();
@@ -40,7 +41,8 @@ void main() {
 
   test('transitions to unauthenticated when stream emits null', () async {
     // ignore: unnecessary_lambdas
-    when(() => auth.authStateChanges()).thenReturn(authStream.stream);
+    when(() => auth.authStateChanges())
+        .thenAnswer((_) => authStream.stream);
     final notifier = AuthStateNotifier(auth, firestore);
 
     authStream.add(null);
@@ -52,7 +54,8 @@ void main() {
 
   test('listenable notifies on unauthenticated transition', () async {
     // ignore: unnecessary_lambdas
-    when(() => auth.authStateChanges()).thenReturn(authStream.stream);
+    when(() => auth.authStateChanges())
+        .thenAnswer((_) => authStream.stream);
     final notifier = AuthStateNotifier(auth, firestore);
 
     var count = 0;

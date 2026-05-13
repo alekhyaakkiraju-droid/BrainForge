@@ -31,7 +31,8 @@ AuthStateNotifier _notifierWithStatus(AuthStatus status, Ref ref) {
   final auth = MockFirebaseAuth();
   final firestore = MockFirebaseFirestore();
   // ignore: unnecessary_lambdas
-  when(() => auth.authStateChanges()).thenReturn(const Stream.empty());
+  when(() => auth.authStateChanges())
+      .thenAnswer((_) => const Stream.empty());
   return _TestAuthNotifier(
     AuthState(
       status: status,
