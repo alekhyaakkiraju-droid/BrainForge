@@ -42,6 +42,5 @@ class FirestoreBadgeRepository implements BadgeRepository {
       _db.collection(_kCollection).doc(id).delete();
 }
 
-final badgeRepositoryProvider = Provider<BadgeRepository>((ref) {
-  return FirestoreBadgeRepository(ref.watch(firestoreProvider));
-});
+final badgeRepositoryProvider = Provider<BadgeRepository>((ref) =>
+    FirestoreBadgeRepository(ref.watch(firestoreProvider)));

@@ -42,6 +42,5 @@ class FirestoreXpRecordRepository implements XpRecordRepository {
       _db.collection(_kCollection).doc(id).delete();
 }
 
-final xpRecordRepositoryProvider = Provider<XpRecordRepository>((ref) {
-  return FirestoreXpRecordRepository(ref.watch(firestoreProvider));
-});
+final xpRecordRepositoryProvider = Provider<XpRecordRepository>((ref) =>
+    FirestoreXpRecordRepository(ref.watch(firestoreProvider)));

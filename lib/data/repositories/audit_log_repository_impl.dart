@@ -47,6 +47,5 @@ class FirestoreAuditLogRepository implements AuditLogRepository {
   }
 }
 
-final auditLogRepositoryProvider = Provider<AuditLogRepository>((ref) {
-  return FirestoreAuditLogRepository(ref.watch(firestoreProvider));
-});
+final auditLogRepositoryProvider = Provider<AuditLogRepository>((ref) =>
+    FirestoreAuditLogRepository(ref.watch(firestoreProvider)));

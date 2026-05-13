@@ -52,6 +52,5 @@ class FirestoreUserProfileRepository implements UserProfileRepository {
       );
 }
 
-final userProfileRepositoryProvider = Provider<UserProfileRepository>((ref) {
-  return FirestoreUserProfileRepository(ref.watch(firestoreProvider));
-});
+final userProfileRepositoryProvider = Provider<UserProfileRepository>((ref) =>
+    FirestoreUserProfileRepository(ref.watch(firestoreProvider)));

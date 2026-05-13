@@ -37,7 +37,7 @@ final appRouterProvider = Provider<GoRouter>((ref) {
 
   return GoRouter(
     initialLocation: AppRoutes.questBoard,
-    refreshListenable: authNotifier,
+    refreshListenable: authNotifier.listenable,
     redirect: (context, state) {
       final isLoggedIn =
           ref.read(authStateProvider) == AuthStatus.authenticated;

@@ -24,7 +24,7 @@ class FirestoreQuestRepository implements QuestRepository {
     String profileId, {
     String? status,
   }) async {
-    Query<Map<String, dynamic>> q = _db
+    var q = _db
         .collection(_kCollection)
         .where('assignedToProfileId', isEqualTo: profileId);
     if (status != null) q = q.where('status', isEqualTo: status);
@@ -56,6 +56,5 @@ class FirestoreQuestRepository implements QuestRepository {
       );
 }
 
-final questRepositoryProvider = Provider<QuestRepository>((ref) {
-  return FirestoreQuestRepository(ref.watch(firestoreProvider));
-});
+final questRepositoryProvider = Provider<QuestRepository>((ref) =>
+    FirestoreQuestRepository(ref.watch(firestoreProvider)));

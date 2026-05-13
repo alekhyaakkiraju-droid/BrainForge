@@ -117,7 +117,7 @@ abstract final class AppTextStyles {
     fontFamily: _bodyFamily,
     fontSize: 16,
     fontWeight: FontWeight.w700,
-    height: 1.0,
+    height: 1,
     letterSpacing: 0.4,
   );
 }

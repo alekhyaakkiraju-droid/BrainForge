@@ -244,8 +244,7 @@ void main() {
     });
 
     test('empty metadata defaults to empty map', () {
-      final json = {..._auditLogJson()};
-      json.remove('metadata');
+      final json = {..._auditLogJson()}..remove('metadata');
       final model = AuditLogModel.fromJson(json);
       expect(model.metadata, isEmpty);
     });

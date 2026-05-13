@@ -46,6 +46,5 @@ class FirestoreMoodEntryRepository implements MoodEntryRepository {
       _db.collection(_kCollection).doc(id).delete();
 }
 
-final moodEntryRepositoryProvider = Provider<MoodEntryRepository>((ref) {
-  return FirestoreMoodEntryRepository(ref.watch(firestoreProvider));
-});
+final moodEntryRepositoryProvider = Provider<MoodEntryRepository>((ref) =>
+    FirestoreMoodEntryRepository(ref.watch(firestoreProvider)));
