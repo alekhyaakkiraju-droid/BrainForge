@@ -2,21 +2,55 @@ import 'package:brainforge/core/constants/app_spacing.dart';
 import 'package:brainforge/core/router/app_router.dart';
 import 'package:brainforge/core/theme/app_theme.dart';
 import 'package:brainforge/domain/auth/auth_state.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:mocktail/mocktail.dart';
 
-AuthStateNotifier _notifierForStatus(AuthStatus status) {
-  final notifier = AuthStateNotifier();
-  if (status == AuthStatus.authenticated) notifier.signIn();
-  return notifier;
+// ── Mocks ─────────────────────────────────────────────────────────────────────
+
+class MockFirebaseAuth extends Mock implements FirebaseAuth {}
+
+class MockFirebaseFirestore extends Mock implements FirebaseFirestore {}
+
+// ── Test notifier ─────────────────────────────────────────────────────────────
+
+/// Subclass that bypasses Firebase by starting with a fixed [AuthState].
+///
+/// [state] is the `@protected` [StateNotifier] setter — accessible here
+/// because [_TestAuthNotifier] is a subclass.
+class _TestAuthNotifier extends AuthStateNotifier {
+  _TestAuthNotifier(AuthState initial, MockFirebaseAuth auth,
+      MockFirebaseFirestore firestore)
+      : super(auth, firestore) {
+    // Override before any async Firebase stream could change it.
+    state = initial;
+  }
 }
 
-// Helper to build a full app under test.
+// ── Helper ────────────────────────────────────────────────────────────────────
+
+AuthStateNotifier _notifierForStatus(AuthStatus status) {
+  final auth = MockFirebaseAuth();
+  final firestore = MockFirebaseFirestore();
+  when(() => auth.authStateChanges())
+      .thenAnswer((_) => const Stream.empty());
+  return _TestAuthNotifier(
+    AuthState(
+      status: status,
+      role: status == AuthStatus.authenticated ? UserRole.parent : null,
+    ),
+    auth,
+    firestore,
+  );
+}
+
 Widget buildApp({required AuthStatus initialAuth}) => ProviderScope(
       overrides: [
         authStateProvider.overrideWith(
-          (ref) => _notifierForStatus(initialAuth),
+          (_) => _notifierForStatus(initialAuth),
         ),
       ],
       child: Consumer(
@@ -26,6 +60,8 @@ Widget buildApp({required AuthStatus initialAuth}) => ProviderScope(
         ),
       ),
     );
+
+// ── Tests ─────────────────────────────────────────────────────────────────────
 
 void main() {
   group('AppShell — navigation', () {
@@ -80,23 +116,52 @@ void main() {
       );
       await tester.pumpAndSettle();
 
-      expect(find.text('Sign In (Demo)'), findsOneWidget);
+      // Login screen shows the BrainForge brand and parent sign-in label.
+      expect(find.text('BrainForge'), findsOneWidget);
+      expect(find.text('Parent sign-in'), findsOneWidget);
     });
 
-    testWidgets('authenticated user skips login', (tester) async {
+    testWidgets('authenticated user sees quest board', (tester) async {
       await tester.pumpWidget(
         buildApp(initialAuth: AuthStatus.authenticated),
       );
       await tester.pumpAndSettle();
 
       expect(find.text('Quest Board'), findsOneWidget);
-      expect(find.text('Sign In (Demo)'), findsNothing);
+      expect(find.text('Parent sign-in'), findsNothing);
+    });
+
+    testWidgets('parentUnverified user sees verify-email screen',
+        (tester) async {
+      await tester.pumpWidget(
+        buildApp(initialAuth: AuthStatus.parentUnverified),
+      );
+      await tester.pumpAndSettle();
+
+      expect(find.text('Check your inbox'), findsOneWidget);
+    });
+
+    testWidgets('parentNeedsConsent user sees consent screen', (tester) async {
+      await tester.pumpWidget(
+        buildApp(initialAuth: AuthStatus.parentNeedsConsent),
+      );
+      await tester.pumpAndSettle();
+
+      expect(find.text('Parental Consent'), findsOneWidget);
+    });
+
+    testWidgets('parentConsented user sees create-child screen', (tester) async {
+      await tester.pumpWidget(
+        buildApp(initialAuth: AuthStatus.parentConsented),
+      );
+      await tester.pumpAndSettle();
+
+      expect(find.text('Create Child Profile'), findsOneWidget);
     });
   });
 
   group('State preservation', () {
-    testWidgets(
-        'counter persists when navigating between tabs', (tester) async {
+    testWidgets('counter persists when navigating between tabs', (tester) async {
       tester.view.physicalSize = const Size(400, 800);
       tester.view.devicePixelRatio = 1;
       addTearDown(tester.view.resetPhysicalSize);
