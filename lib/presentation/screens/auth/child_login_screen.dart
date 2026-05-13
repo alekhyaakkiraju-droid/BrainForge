@@ -71,14 +71,15 @@ class _ChildLoginScreenState extends ConsumerState<ChildLoginScreen> {
   @override
   Widget build(BuildContext context) => Scaffold(
         backgroundColor: AppColors.primary,
-        body: Center(
-          child: ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 400),
-            child: Padding(
-              padding: const EdgeInsets.all(AppSpacing.xl),
-              child: Form(
-                key: _formKey,
-                child: Column(
+        body: SingleChildScrollView(
+          child: Center(
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 400),
+              child: Padding(
+                padding: const EdgeInsets.all(AppSpacing.xl),
+                child: Form(
+                  key: _formKey,
+                  child: Column(
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
@@ -173,5 +174,6 @@ class _ChildLoginScreenState extends ConsumerState<ChildLoginScreen> {
             ),
           ),
         ),
-      );
+      ),
+    );
 }

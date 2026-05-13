@@ -69,8 +69,10 @@ class _EmailVerificationScreenState
 
   @override
   Widget build(BuildContext context) {
-    final email =
-        FirebaseAuth.instance.currentUser?.email ?? 'your email';
+    // Read current user from the auth notifier state so no Firebase singleton
+    // call is needed in build (avoids crash in test environments).
+    final auth = ref.watch(authStateProvider);
+    final email = auth.displayName ?? 'your email';
 
     return Scaffold(
       backgroundColor: AppColors.primaryLight,

@@ -72,6 +72,7 @@ void main() {
     await tester.tap(find.byType(CheckboxListTile));
     await tester.pump();
 
+    await tester.ensureVisible(find.text('Continue'));
     await tester.tap(find.text('Continue'));
     await tester.pump();
 
@@ -98,6 +99,7 @@ void main() {
     await tester.tap(find.byType(CheckboxListTile));
     await tester.pump();
 
+    await tester.ensureVisible(find.text('Continue'));
     await tester.tap(find.text('Continue'));
     await tester.pumpAndSettle();
 
