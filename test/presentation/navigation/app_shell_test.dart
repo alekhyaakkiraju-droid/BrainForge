@@ -136,7 +136,10 @@ void main() {
       await tester.pumpWidget(
         buildApp(initialAuth: AuthStatus.parentUnverified),
       );
-      await tester.pumpAndSettle();
+      // Use pump() rather than pumpAndSettle(): the EmailVerificationScreen
+      // starts a Timer.periodic that never settles, causing a timeout.
+      await tester.pump();
+      await tester.pump();
 
       expect(find.text('Check your inbox'), findsOneWidget);
     });
