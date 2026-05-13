@@ -1,3 +1,6 @@
+import 'package:brainforge/data/services/functions_service.dart';
+import 'package:brainforge/domain/auth/auth_state.dart';
+import 'package:brainforge/presentation/screens/auth/consent_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -6,12 +9,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 
-import 'package:brainforge/data/services/functions_service.dart';
-import 'package:brainforge/domain/auth/auth_state.dart';
-import 'package:brainforge/presentation/screens/auth/consent_screen.dart';
-
-// ── Mocks ─────────────────────────────────────────────────────────────────────
-
 class MockFunctionsService extends Mock implements FunctionsService {}
 
 class MockFirebaseAuth extends Mock implements FirebaseAuth {}
@@ -19,8 +16,6 @@ class MockFirebaseAuth extends Mock implements FirebaseAuth {}
 // FirebaseFirestore overrides ==; suppress lint for test-only mocking.
 // ignore: avoid_implementing_value_types
 class MockFirebaseFirestore extends Mock implements FirebaseFirestore {}
-
-// ── Helpers ───────────────────────────────────────────────────────────────────
 
 AuthStateNotifier _stubNotifier(Ref ref) {
   final auth = MockFirebaseAuth();
@@ -38,8 +33,6 @@ Widget _wrap(Widget child, {FunctionsService? functions}) => ProviderScope(
       ],
       child: MaterialApp(home: child),
     );
-
-// ── Tests ─────────────────────────────────────────────────────────────────────
 
 void main() {
   testWidgets('Continue button does nothing when checkbox is unchecked',

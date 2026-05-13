@@ -9,19 +9,14 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 
-// ── Mocks ─────────────────────────────────────────────────────────────────────
-
 class MockFirebaseAuth extends Mock implements FirebaseAuth {}
 
 // FirebaseFirestore overrides ==; suppress lint for test-only mocking.
 // ignore: avoid_implementing_value_types
 class MockFirebaseFirestore extends Mock implements FirebaseFirestore {}
 
-// ── Test notifier ─────────────────────────────────────────────────────────────
-
-/// Subclass that starts with a fixed [AuthState] without making any real
-/// Firebase calls — the stream is empty so [_resolveState] is never invoked,
-/// and [state] is set directly via the protected [StateNotifier] setter.
+/// Subclass that starts with a fixed [AuthState] without any real Firebase
+/// calls — the stream is empty so [_resolveState] is never invoked.
 class _TestAuthNotifier extends AuthStateNotifier {
   _TestAuthNotifier(
     AuthState initial,
@@ -31,8 +26,6 @@ class _TestAuthNotifier extends AuthStateNotifier {
     state = initial;
   }
 }
-
-// ── Helper ────────────────────────────────────────────────────────────────────
 
 AuthStateNotifier _notifierWithStatus(AuthStatus status, Ref ref) {
   final auth = MockFirebaseAuth();
@@ -63,8 +56,6 @@ Widget buildApp({required AuthStatus initialAuth}) => ProviderScope(
         ),
       ),
     );
-
-// ── Tests ─────────────────────────────────────────────────────────────────────
 
 void main() {
   group('AppShell — navigation', () {
@@ -108,8 +99,9 @@ void main() {
       );
       await tester.pumpAndSettle();
 
-      final bar =
-          tester.widget<NavigationBar>(find.byType(NavigationBar));
+      final bar = tester.widget<NavigationBar>(
+        find.byType(NavigationBar),
+      );
       expect(
         bar.height,
         greaterThanOrEqualTo(AppSpacing.minTouchTarget),
@@ -138,8 +130,8 @@ void main() {
       expect(find.text('Parent sign-in'), findsNothing);
     });
 
-    testWidgets(
-        'parentUnverified user sees verify-email screen', (tester) async {
+    testWidgets('parentUnverified user sees verify-email screen',
+        (tester) async {
       await tester.pumpWidget(
         buildApp(initialAuth: AuthStatus.parentUnverified),
       );
@@ -158,8 +150,8 @@ void main() {
       expect(find.text('Parental Consent'), findsOneWidget);
     });
 
-    testWidgets(
-        'parentConsented user sees create-child screen', (tester) async {
+    testWidgets('parentConsented user sees create-child screen',
+        (tester) async {
       await tester.pumpWidget(
         buildApp(initialAuth: AuthStatus.parentConsented),
       );

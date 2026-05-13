@@ -1,13 +1,10 @@
 import 'dart:async';
 
+import 'package:brainforge/domain/auth/auth_state.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
-
-import 'package:brainforge/domain/auth/auth_state.dart';
-
-// ── Mocks ─────────────────────────────────────────────────────────────────────
 
 class MockFirebaseAuth extends Mock implements FirebaseAuth {}
 
@@ -15,12 +12,9 @@ class MockFirebaseAuth extends Mock implements FirebaseAuth {}
 // ignore: avoid_implementing_value_types
 class MockFirebaseFirestore extends Mock implements FirebaseFirestore {}
 
-// ── Tests ─────────────────────────────────────────────────────────────────────
-
-/// Full state-resolution flows (parentUnverified, parentNeedsConsent, etc.)
-/// depend on sealed Firestore chain types that cannot be mocked directly.
-/// Those paths are exercised end-to-end by the redirect tests in
-/// [app_shell_test.dart] via [_TestAuthNotifier].
+/// Full state-resolution flows depend on sealed Firestore chain types that
+/// cannot be mocked directly. Those paths are exercised end-to-end by the
+/// redirect tests in [app_shell_test.dart] via [_TestAuthNotifier].
 ///
 /// These tests focus on the stream boundary and [AuthState] value semantics.
 void main() {
