@@ -40,13 +40,17 @@ class _EmailVerificationScreenState
   }
 
   Future<void> _checkVerification() async {
-    final user = FirebaseAuth.instance.currentUser;
-    if (user == null) return;
-    await user.reload();
-    if (FirebaseAuth.instance.currentUser?.emailVerified ?? false) {
-      _pollTimer?.cancel();
-      // Trigger GoRouter redirect by advancing auth state.
-      await ref.read(authStateProvider.notifier).refresh();
+    // Guard against test environments where Firebase is not initialized.
+    try {
+      final user = FirebaseAuth.instance.currentUser;
+      if (user == null) return;
+      await user.reload();
+      if (FirebaseAuth.instance.currentUser?.emailVerified ?? false) {
+        _pollTimer?.cancel();
+        await ref.read(authStateProvider.notifier).refresh();
+      }
+    } on FirebaseException {
+      return;
     }
   }
 
