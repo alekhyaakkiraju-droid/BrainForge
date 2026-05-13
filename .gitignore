@@ -9,12 +9,14 @@ build/
 *.g.dart
 *.freezed.dart
 
-# Firebase credentials — NEVER commit these
+# Firebase credentials — NEVER commit real credential files
+# .example files are safe templates and ARE committed
 google-services.json
 GoogleService-Info.plist
-firebase_options.dart
-.firebaserc
 .firebase/
+
+# firebase_options.dart uses only dart-define env vars — safe to commit
+# .firebaserc and firebase.json contain no secrets — safe to commit
 
 # Environment config
 .env

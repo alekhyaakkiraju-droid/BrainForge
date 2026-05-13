@@ -1,0 +1,28 @@
+{
+  "project_info": {
+    "project_number": "REPLACE_WITH_PROD_PROJECT_NUMBER",
+    "project_id": "brainforge-prod",
+    "storage_bucket": "brainforge-prod.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "REPLACE_WITH_PROD_ANDROID_APP_ID",
+        "android_client_info": {
+          "package_name": "com.brainforge.app"
+        }
+      },
+      "api_key": [
+        {
+          "current_key": "REPLACE_WITH_PROD_ANDROID_API_KEY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
