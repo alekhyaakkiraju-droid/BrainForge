@@ -1,0 +1,19 @@
+default_platform(:android)
+
+platform :android do
+  desc "Deploy prod AAB to Google Play Store internal track"
+  lane :deploy_prod do
+    upload_to_play_store(
+      track: "internal",
+      aab: "../build/app/outputs/bundle/prodRelease/app-prod-release.aab",
+      json_key_data: ENV["PLAY_STORE_JSON_KEY"],
+      package_name: "com.brainforge.app",
+      release_status: "draft",
+      skip_upload_apk: true,
+      skip_upload_metadata: true,
+      skip_upload_changelogs: true,
+      skip_upload_images: true,
+      skip_upload_screenshots: true
+    )
+  end
+end

@@ -1,0 +1,2 @@
+json_key_file("")   # Injected via ENV in CI
+package_name("com.brainforge.app")
