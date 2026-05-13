@@ -92,16 +92,35 @@ jobs:
             --project brainforge-test \
             'npm run test:ci'
 
-  dependency-audit:
-    name: Dependency Audit
+  functions-build-and-test:
+    name: Functions Build & Test
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
 
-      - name: npm audit (backend functions)
-        run: |
-          if [ -d "functions" ]; then
-            cd functions && npm audit --audit-level=high
-          else
-            echo "No Cloud Functions yet — skipping (added in WO-008)"
-          fi
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: npm
+          cache-dependency-path: functions/package-lock.json
+
+      - name: Install functions dependencies
+        working-directory: functions
+        run: npm ci
+
+      - name: Build TypeScript
+        working-directory: functions
+        run: npm run build
+
+      - name: Lint
+        working-directory: functions
+        run: npm run lint
+
+      - name: Run unit tests
+        working-directory: functions
+        run: npm run test:ci
+
+      - name: npm audit (no high/critical vulnerabilities)
+        working-directory: functions
+        run: npm audit --audit-level=high
