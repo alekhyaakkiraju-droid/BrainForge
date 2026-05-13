@@ -1,0 +1,10 @@
+{
+  "projects": {
+    "default": "brainforge-dev",
+    "dev": "brainforge-dev",
+    "staging": "brainforge-staging",
+    "prod": "brainforge-prod"
+  },
+  "targets": {},
+  "etags": {}
+}
