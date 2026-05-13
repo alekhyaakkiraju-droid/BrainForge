@@ -1,6 +1,8 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../presentation/design_system/design_system_screen.dart';
 import '../../presentation/home/home_screen.dart';
 import '../../presentation/splash/splash_screen.dart';
 
@@ -8,6 +10,9 @@ import '../../presentation/splash/splash_screen.dart';
 abstract final class AppRoutes {
   static const splash = '/';
   static const home = '/home';
+
+  /// Debug-only design system showcase.
+  static const designSystem = '/design-system';
 }
 
 /// GoRouter instance exposed as a Riverpod provider.
@@ -26,6 +31,12 @@ final appRouterProvider = Provider<GoRouter>(
         path: AppRoutes.home,
         builder: (context, state) => const HomeScreen(),
       ),
+      // Design-system showcase only available in debug builds
+      if (kDebugMode)
+        GoRoute(
+          path: AppRoutes.designSystem,
+          builder: (context, state) => const DesignSystemScreen(),
+        ),
     ],
   ),
 );
