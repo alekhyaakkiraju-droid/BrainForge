@@ -10,8 +10,6 @@ import '../../presentation/screens/mood/mood_checkin_screen.dart';
 import '../../presentation/screens/profile/profile_screen.dart';
 import '../../presentation/screens/progress/progress_map_screen.dart';
 import '../../presentation/screens/quest_board/quest_board_screen.dart';
-import '../../presentation/screens/schedule/schedule_screen.dart';
-import '../../presentation/screens/settings/settings_screen.dart';
 import '../../presentation/screens/timer/timer_screen.dart';
 import '../../presentation/shell/app_shell.dart';
 
