@@ -59,38 +59,42 @@ final appRouterProvider = Provider<GoRouter>((ref) {
         builder: (context, state) => const MoodCheckinScreen(),
       ),
 
-      // Shell provides persistent tablet navigation for all main screens
-      ShellRoute(
-        builder: (context, state, child) => AppShell(child: child),
-        routes: [
-          GoRoute(
-            path: AppRoutes.questBoard,
-            builder: (context, state) => const QuestBoardScreen(),
-          ),
-          GoRoute(
-            path: AppRoutes.timer,
-            builder: (context, state) => const TimerScreen(),
-          ),
-          GoRoute(
-            path: AppRoutes.progressMap,
-            builder: (context, state) => const ProgressMapScreen(),
-          ),
-          GoRoute(
-            path: AppRoutes.profile,
-            builder: (context, state) => const ProfileScreen(),
-          ),
-          GoRoute(
-            path: AppRoutes.badges,
-            builder: (context, state) => const BadgesScreen(),
-          ),
-          GoRoute(
-            path: AppRoutes.schedule,
-            builder: (context, state) => const ScheduleScreen(),
-          ),
-          GoRoute(
-            path: AppRoutes.settings,
-            builder: (context, state) => const SettingsScreen(),
-          ),
+      // StatefulShellRoute preserves each branch's widget state so the
+      // counter on placeholder screens survives tab switches.
+      StatefulShellRoute.indexedStack(
+        builder: (context, state, navigationShell) =>
+            AppShell(navigationShell: navigationShell),
+        branches: [
+          StatefulShellBranch(routes: [
+            GoRoute(
+              path: AppRoutes.questBoard,
+              builder: (context, state) => const QuestBoardScreen(),
+            ),
+          ]),
+          StatefulShellBranch(routes: [
+            GoRoute(
+              path: AppRoutes.timer,
+              builder: (context, state) => const TimerScreen(),
+            ),
+          ]),
+          StatefulShellBranch(routes: [
+            GoRoute(
+              path: AppRoutes.progressMap,
+              builder: (context, state) => const ProgressMapScreen(),
+            ),
+          ]),
+          StatefulShellBranch(routes: [
+            GoRoute(
+              path: AppRoutes.badges,
+              builder: (context, state) => const BadgesScreen(),
+            ),
+          ]),
+          StatefulShellBranch(routes: [
+            GoRoute(
+              path: AppRoutes.profile,
+              builder: (context, state) => const ProfileScreen(),
+            ),
+          ]),
         ],
       ),
 
