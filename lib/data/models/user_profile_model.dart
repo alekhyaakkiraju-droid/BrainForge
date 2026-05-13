@@ -86,7 +86,7 @@ class UserProfileModel {
       );
 }
 
-DateTime _parseTimestamp(dynamic value) {
+DateTime _parseTimestamp(Object? value) {
   if (value is Timestamp) return value.toDate();
   if (value is String) return DateTime.parse(value);
   throw ArgumentError('Cannot parse timestamp: $value');

@@ -24,7 +24,7 @@ class FirestoreQuestRepository implements QuestRepository {
     String profileId, {
     String? status,
   }) async {
-    Query<Map<String, dynamic>> q = _db
+    var q = _db
         .collection(_kCollection)
         .where('assignedToProfileId', isEqualTo: profileId);
     if (status != null) q = q.where('status', isEqualTo: status);

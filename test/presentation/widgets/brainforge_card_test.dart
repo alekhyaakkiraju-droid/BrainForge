@@ -50,18 +50,19 @@ void main() {
         (tester) async {
       await tester.pumpWidget(
         _wrap(
-          BrainForgeCard(
+          const BrainForgeCard(
             accentColor: Colors.purple,
-            child: const Text('A'),
+            child: Text('A'),
           ),
         ),
       );
-      final containers = tester.widgetList<Container>(find.byType(Container));
+      final containers =
+          tester.widgetList<Container>(find.byType(Container));
       final stripe = containers.any(
         (c) =>
             c.constraints?.maxWidth == 6 ||
             (c.decoration is BoxDecoration &&
-                (c.decoration as BoxDecoration).color == Colors.purple),
+                (c.decoration! as BoxDecoration).color == Colors.purple),
       );
       expect(stripe, isTrue);
     });

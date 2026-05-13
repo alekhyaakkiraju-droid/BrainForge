@@ -54,6 +54,5 @@ class FirestoreSessionRepository implements SessionRepository {
       );
 }
 
-final sessionRepositoryProvider = Provider<SessionRepository>((ref) {
-  return FirestoreSessionRepository(ref.watch(firestoreProvider));
-});
+final sessionRepositoryProvider = Provider<SessionRepository>((ref) =>
+    FirestoreSessionRepository(ref.watch(firestoreProvider)));
