@@ -22,23 +22,11 @@ class DesignSystemScreen extends StatelessWidget {
           padding: const EdgeInsets.all(AppSpacing.lg),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _Section(
-                title: 'Colors',
-                child: _ColorPalette(),
-              ),
-              _Section(
-                title: 'Typography',
-                child: _TypographyScale(),
-              ),
-              _Section(
-                title: 'BrainForgeButton',
-                child: _ButtonShowcase(),
-              ),
-              _Section(
-                title: 'BrainForgeCard',
-                child: _CardShowcase(),
-              ),
+            children: const [
+              _Section(title: 'Colors', child: _ColorPalette()),
+              _Section(title: 'Typography', child: _TypographyScale()),
+              _Section(title: 'BrainForgeButton', child: _ButtonShowcase()),
+              _Section(title: 'BrainForgeCard', child: _CardShowcase()),
               _Section(
                 title: 'BrainForgeProgressBar',
                 child: _ProgressShowcase(),
@@ -83,9 +71,11 @@ class _Section extends StatelessWidget {
 // ── Color palette ────────────────────────────────────────────────────────────
 
 class _ColorPalette extends StatelessWidget {
+  const _ColorPalette();
+
   @override
   Widget build(BuildContext context) {
-    final swatches = <(String, Color)>[
+    const swatches = <(String, Color)>[
       ('Primary', AppColors.primary),
       ('Primary Dark', AppColors.primaryDark),
       ('Secondary', AppColors.secondary),
@@ -100,9 +90,7 @@ class _ColorPalette extends StatelessWidget {
       spacing: AppSpacing.sm,
       runSpacing: AppSpacing.sm,
       children: swatches
-          .map(
-            (s) => _ColorSwatch(label: s.$1, color: s.$2),
-          )
+          .map((s) => _ColorSwatch(label: s.$1, color: s.$2))
           .toList(),
     );
   }
@@ -136,9 +124,11 @@ class _ColorSwatch extends StatelessWidget {
       );
 }
 
-// ── Typography ────────────────────────────────────────────────────────────────
+// ── Typography ───────────────────────────────────────────────────────────────
 
 class _TypographyScale extends StatelessWidget {
+  const _TypographyScale();
+
   @override
   Widget build(BuildContext context) {
     final tt = Theme.of(context).textTheme;
@@ -158,8 +148,7 @@ class _TypographyScale extends StatelessWidget {
       children: styles
           .map(
             (s) => Padding(
-              padding:
-                  const EdgeInsets.only(bottom: AppSpacing.sm),
+              padding: const EdgeInsets.only(bottom: AppSpacing.sm),
               child: Text(
                 s.$1,
                 style: s.$2,
@@ -173,9 +162,11 @@ class _TypographyScale extends StatelessWidget {
   }
 }
 
-// ── Buttons ───────────────────────────────────────────────────────────────────
+// ── Buttons ──────────────────────────────────────────────────────────────────
 
 class _ButtonShowcase extends StatelessWidget {
+  const _ButtonShowcase();
+
   @override
   Widget build(BuildContext context) => Wrap(
         spacing: AppSpacing.md,
@@ -217,23 +208,25 @@ class _ButtonShowcase extends StatelessWidget {
       );
 }
 
-// ── Cards ─────────────────────────────────────────────────────────────────────
+// ── Cards ────────────────────────────────────────────────────────────────────
 
 class _CardShowcase extends StatelessWidget {
+  const _CardShowcase();
+
   @override
   Widget build(BuildContext context) => Column(
         children: [
           BrainForgeCard(
             accentColor: AppColors.primary,
             onTap: () {},
-            child: BrainForgeIconLabel(
+            child: const BrainForgeIconLabel(
               icon: Icons.menu_book_rounded,
               label: 'Math Quest — Multiplication',
               color: AppColors.primary,
             ),
           ),
           const SizedBox(height: AppSpacing.sm),
-          BrainForgeCard(
+          const BrainForgeCard(
             accentColor: AppColors.scienceSpark,
             child: BrainForgeIconLabel(
               icon: Icons.science_rounded,
@@ -242,7 +235,7 @@ class _CardShowcase extends StatelessWidget {
             ),
           ),
           const SizedBox(height: AppSpacing.sm),
-          BrainForgeCard(
+          const BrainForgeCard(
             accentColor: AppColors.warning,
             child: BrainForgeIconLabel(
               icon: Icons.emoji_events_rounded,
@@ -254,11 +247,13 @@ class _CardShowcase extends StatelessWidget {
       );
 }
 
-// ── Progress bars ─────────────────────────────────────────────────────────────
+// ── Progress bars ────────────────────────────────────────────────────────────
 
 class _ProgressShowcase extends StatelessWidget {
+  const _ProgressShowcase();
+
   @override
-  Widget build(BuildContext context) => Column(
+  Widget build(BuildContext context) => const Column(
         children: [
           BrainForgeProgressBar(
             value: 0.72,
@@ -266,21 +261,21 @@ class _ProgressShowcase extends StatelessWidget {
             icon: Icons.bolt_rounded,
             color: AppColors.xpGold,
           ),
-          const SizedBox(height: AppSpacing.md),
+          SizedBox(height: AppSpacing.md),
           BrainForgeProgressBar(
             value: 0.4,
             label: 'Element Collection',
             icon: Icons.science_rounded,
             color: AppColors.scienceSpark,
           ),
-          const SizedBox(height: AppSpacing.md),
+          SizedBox(height: AppSpacing.md),
           BrainForgeProgressBar(
             value: 1,
             label: 'Quest Complete!',
             icon: Icons.check_circle_rounded,
             color: AppColors.success,
           ),
-          const SizedBox(height: AppSpacing.md),
+          SizedBox(height: AppSpacing.md),
           BrainForgeProgressBar(
             value: 0.1,
             label: 'Getting started…',
@@ -290,11 +285,13 @@ class _ProgressShowcase extends StatelessWidget {
       );
 }
 
-// ── Icon labels ───────────────────────────────────────────────────────────────
+// ── Icon labels ──────────────────────────────────────────────────────────────
 
 class _IconLabelShowcase extends StatelessWidget {
+  const _IconLabelShowcase();
+
   @override
-  Widget build(BuildContext context) => Wrap(
+  Widget build(BuildContext context) => const Wrap(
         spacing: AppSpacing.lg,
         runSpacing: AppSpacing.lg,
         children: [
