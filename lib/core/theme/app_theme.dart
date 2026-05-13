@@ -83,7 +83,6 @@ abstract final class AppTheme {
         useMaterial3: true,
         colorScheme: ColorScheme.fromSeed(
           seedColor: AppColors.primary,
-          brightness: Brightness.light,
           surface: AppColors.surface,
         ),
         scaffoldBackgroundColor: AppColors.background,
@@ -104,6 +103,7 @@ abstract final class AppTheme {
         filledButtonTheme: _filledButtonTheme(),
         cardTheme: _cardTheme(),
       );
+
 
   static TextTheme _textTheme(Color onBackground) => TextTheme(
         displayLarge: AppTextStyles.displayLarge.copyWith(color: onBackground),

@@ -1,0 +1,134 @@
+name: Deploy to Production
+
+on:
+  push:
+    tags:
+      - "v*"
+
+concurrency:
+  group: deploy-production
+  cancel-in-progress: false
+
+env:
+  FLUTTER_VERSION: "3.22.0"
+  JAVA_VERSION: "17"
+
+jobs:
+  deploy-android-prod:
+    name: Deploy Android to Play Store (prod)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: ${{ env.JAVA_VERSION }}
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          channel: stable
+          cache: true
+
+      - name: Set up Ruby for Fastlane
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: "3.2"
+          bundler-cache: true
+          working-directory: android
+
+      - name: Write prod google-services.json
+        run: echo '${{ secrets.GOOGLE_SERVICES_JSON_PROD }}' > android/app/src/prod/google-services.json
+
+      - name: Write Play Store keystore
+        run: |
+          echo '${{ secrets.ANDROID_KEYSTORE_BASE64 }}' | base64 --decode > android/app/brainforge.jks
+          cat <<EOF > android/key.properties
+          storePassword=${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          keyPassword=${{ secrets.ANDROID_KEY_PASSWORD }}
+          keyAlias=${{ secrets.ANDROID_KEY_ALIAS }}
+          storeFile=brainforge.jks
+          EOF
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Build Android AAB (prod)
+        run: |
+          flutter build appbundle \
+            --flavor prod \
+            --dart-define=FLAVOR=prod \
+            --release
+
+      - name: Deploy to Play Store via Fastlane
+        working-directory: android
+        run: bundle exec fastlane deploy_prod
+        env:
+          PLAY_STORE_JSON_KEY: ${{ secrets.PLAY_STORE_JSON_KEY }}
+
+  deploy-ios-prod:
+    name: Deploy iOS to App Store (prod)
+    runs-on: macos-14
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          channel: stable
+          cache: true
+
+      - name: Set up Ruby for Fastlane
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: "3.2"
+          bundler-cache: true
+          working-directory: ios
+
+      - name: Write prod GoogleService-Info.plist
+        run: echo '${{ secrets.GOOGLE_SERVICE_INFO_PLIST_PROD }}' > ios/config/prod/GoogleService-Info.plist
+
+      - name: Install CocoaPods
+        run: cd ios && pod install --repo-update
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Deploy to App Store via Fastlane
+        working-directory: ios
+        run: bundle exec fastlane deploy_prod
+        env:
+          APP_STORE_CONNECT_API_KEY_ID: ${{ secrets.ASC_KEY_ID }}
+          APP_STORE_CONNECT_API_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
+          APP_STORE_CONNECT_API_KEY_CONTENT: ${{ secrets.ASC_KEY_CONTENT }}
+          MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
+          MATCH_GIT_BASIC_AUTHORIZATION: ${{ secrets.MATCH_GIT_BASIC_AUTHORIZATION }}
+
+  deploy-functions-prod:
+    name: Deploy Cloud Functions (prod)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install Firebase CLI
+        run: npm install -g firebase-tools
+
+      - name: Deploy Cloud Functions + Firestore rules to prod
+        run: |
+          if [ -d "functions" ] || [ -f "firestore.rules" ]; then
+            firebase deploy \
+              --only functions,firestore \
+              --project brainforge-prod \
+              --token "${{ secrets.FIREBASE_CLI_TOKEN }}"
+          else
+            echo "No Functions/rules yet — skipping"
+          fi

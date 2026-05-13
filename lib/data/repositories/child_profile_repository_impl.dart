@@ -26,9 +26,7 @@ class ChildProfileRepositoryImpl implements ChildProfileRepository {
   Future<Result<ChildProfile>> getProfile(String profileId) async {
     try {
       final cached = _localBox.get(profileId);
-      if (cached != null) {
-        return Success(cached.toDomain());
-      }
+      if (cached != null) return Success(cached.toDomain());
 
       final doc =
           await _firestore.collection(_collection).doc(profileId).get();
@@ -42,7 +40,7 @@ class ChildProfileRepositoryImpl implements ChildProfileRepository {
     } on FirebaseException catch (e, st) {
       appLogger.e('getProfile failed', error: e, stackTrace: st);
       return Err(ServerFailure(e.message ?? 'Firestore error.'));
-    } catch (e, st) {
+    } on Exception catch (e, st) {
       appLogger.e('getProfile unexpected error', error: e, stackTrace: st);
       return const Err(UnexpectedFailure());
     }
@@ -66,7 +64,7 @@ class ChildProfileRepositoryImpl implements ChildProfileRepository {
     } on FirebaseException catch (e, st) {
       appLogger.e('listProfiles failed', error: e, stackTrace: st);
       return Err(ServerFailure(e.message ?? 'Firestore error.'));
-    } catch (e, st) {
+    } on Exception catch (e, st) {
       appLogger.e('listProfiles unexpected error', error: e, stackTrace: st);
       return const Err(UnexpectedFailure());
     }
@@ -77,17 +75,15 @@ class ChildProfileRepositoryImpl implements ChildProfileRepository {
     try {
       final model = ChildProfileModel.fromDomain(profile);
       await _localBox.put(profile.id, model);
-
       await _firestore
           .collection(_collection)
           .doc(profile.id)
           .set(_toFirestore(model));
-
       return Success(profile);
     } on FirebaseException catch (e, st) {
       appLogger.e('saveProfile failed', error: e, stackTrace: st);
       return Err(ServerFailure(e.message ?? 'Firestore error.'));
-    } catch (e, st) {
+    } on Exception catch (e, st) {
       appLogger.e('saveProfile unexpected error', error: e, stackTrace: st);
       return const Err(UnexpectedFailure());
     }
@@ -102,8 +98,8 @@ class ChildProfileRepositoryImpl implements ChildProfileRepository {
     } on FirebaseException catch (e, st) {
       appLogger.e('deleteProfile failed', error: e, stackTrace: st);
       return Err(ServerFailure(e.message ?? 'Firestore error.'));
-    } catch (e, st) {
-      appLogger.e('deleteProfile unexpected error', error: e, stackTrace: st);
+    } on Exception catch (e, st) {
+      appLogger.e('deleteProfile unexpected', error: e, stackTrace: st);
       return const Err(UnexpectedFailure());
     }
   }
@@ -115,7 +111,7 @@ class ChildProfileRepositoryImpl implements ChildProfileRepository {
   ) async {
     final current = await getProfile(profileId);
     return current.fold(
-      onSuccess: (profile) => saveProfile(profile.copyWith(activeMode: newMode)),
+      onSuccess: (p) => saveProfile(p.copyWith(activeMode: newMode)),
       onError: Err.new,
     );
   }

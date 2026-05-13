@@ -1,0 +1,2 @@
+app_identifier("com.brainforge.app")
+# Apple ID and team are resolved at runtime via App Store Connect API key

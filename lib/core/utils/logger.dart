@@ -5,11 +5,5 @@ import 'package:logger/logger.dart';
 /// release builds suppress everything below warnings.
 final appLogger = Logger(
   level: kDebugMode ? Level.debug : Level.warning,
-  printer: PrettyPrinter(
-    methodCount: 2,
-    errorMethodCount: 8,
-    lineLength: 80,
-    colors: true,
-    printEmojis: true,
-  ),
+  printer: PrettyPrinter(lineLength: 80),
 );
