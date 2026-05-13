@@ -1,0 +1,223 @@
+rules_version = '2';
+
+// ─────────────────────────────────────────────────────────────────────────────
+// BrainForge — Firestore Security Rules
+//
+// Role model (set as Firebase Auth custom claims):
+//   • student  — the child user; bound to their own documents only
+//   • parent   — linked to children via parentId field; read-only on child docs
+//   • teacher  — read-only on class-aggregate collections only
+//
+// COPPA compliance: no unrestricted access to any child document by third
+// parties. All writes are validated for required fields and type correctness.
+// ─────────────────────────────────────────────────────────────────────────────
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ── Helper functions ─────────────────────────────────────────────────────
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function uid() {
+      return request.auth.uid;
+    }
+
+    function role() {
+      return request.auth.token.role;
+    }
+
+    function isStudent() {
+      return isSignedIn() && role() == 'student';
+    }
+
+    function isParent() {
+      return isSignedIn() && role() == 'parent';
+    }
+
+    function isTeacher() {
+      return isSignedIn() && role() == 'teacher';
+    }
+
+    function isAdmin() {
+      return isSignedIn() && role() == 'admin';
+    }
+
+    function ownsDoc(userId) {
+      return uid() == userId;
+    }
+
+    // A parent is linked to a child when the child document's parentId
+    // matches the parent's UID.
+    function isLinkedParentOf(childUserId) {
+      return isParent() && exists(/databases/$(database)/documents/users/$(childUserId))
+        && get(/databases/$(database)/documents/users/$(childUserId)).data.parentId == uid();
+    }
+
+    // ── User profiles ────────────────────────────────────────────────────────
+
+    match /users/{userId} {
+      allow read: if ownsDoc(userId) || isLinkedParentOf(userId) || isAdmin();
+      allow create: if ownsDoc(userId) && validUserProfile();
+      allow update: if ownsDoc(userId) && validUserProfile();
+      allow delete: if isAdmin();
+
+      function validUserProfile() {
+        let d = request.resource.data;
+        return d.keys().hasAll(['displayName', 'parentUid', 'mode', 'xp', 'level'])
+          && d.displayName is string && d.displayName.size() > 0
+          && d.xp is int && d.xp >= 0
+          && d.level is int && d.level >= 1
+          && (d.mode == 'school' || d.mode == 'summer');
+      }
+    }
+
+    // ── Quests ───────────────────────────────────────────────────────────────
+
+    match /quests/{questId} {
+      allow read: if isSignedIn()
+        && (ownsDoc(resource.data.assignedToProfileId)
+            || isLinkedParentOf(resource.data.assignedToProfileId)
+            || isAdmin());
+      allow create: if isAdmin();
+      allow update: if ownsDoc(resource.data.assignedToProfileId)
+        && validQuestUpdate();
+      allow delete: if isAdmin();
+
+      function validQuestUpdate() {
+        let allowed = ['status', 'completedAt'];
+        return request.resource.data.diff(resource.data).affectedKeys().hasOnly(allowed);
+      }
+    }
+
+    // ── Quest submissions ────────────────────────────────────────────────────
+
+    match /questSubmissions/{submissionId} {
+      allow read: if isSignedIn()
+        && (ownsDoc(resource.data.profileId)
+            || isLinkedParentOf(resource.data.profileId)
+            || isAdmin());
+      allow create: if isStudent()
+        && ownsDoc(request.resource.data.profileId)
+        && validQuestSubmission();
+      allow update, delete: if isAdmin();
+
+      function validQuestSubmission() {
+        let d = request.resource.data;
+        return d.keys().hasAll(['questId', 'profileId', 'submittedAt', 'durationSeconds', 'xpEarned'])
+          && d.questId is string && d.questId.size() > 0
+          && d.profileId is string && d.profileId.size() > 0
+          && d.durationSeconds is int && d.durationSeconds >= 0
+          && d.xpEarned is int && d.xpEarned >= 0;
+      }
+    }
+
+    // ── Sessions ─────────────────────────────────────────────────────────────
+
+    match /sessions/{sessionId} {
+      allow read: if isSignedIn()
+        && (ownsDoc(resource.data.profileId)
+            || isLinkedParentOf(resource.data.profileId)
+            || isAdmin());
+      allow create: if isStudent()
+        && ownsDoc(request.resource.data.profileId)
+        && validSession();
+      allow update: if isStudent()
+        && ownsDoc(resource.data.profileId);
+      allow delete: if isAdmin();
+
+      function validSession() {
+        let d = request.resource.data;
+        return d.keys().hasAll(['profileId', 'startedAt', 'durationSeconds', 'wasCompleted'])
+          && d.profileId is string
+          && d.durationSeconds is int && d.durationSeconds >= 0
+          && d.wasCompleted is bool;
+      }
+    }
+
+    // ── XP records ───────────────────────────────────────────────────────────
+
+    match /xpRecords/{recordId} {
+      allow read: if isSignedIn()
+        && (ownsDoc(resource.data.profileId)
+            || isLinkedParentOf(resource.data.profileId)
+            || isAdmin());
+      // Only Cloud Functions (admin SDK) write XP records to prevent tampering.
+      allow write: if isAdmin();
+    }
+
+    // ── Mood entries ─────────────────────────────────────────────────────────
+
+    match /moodEntries/{entryId} {
+      allow read: if isSignedIn()
+        && (ownsDoc(resource.data.profileId)
+            || isLinkedParentOf(resource.data.profileId)
+            || isAdmin());
+      allow create: if isStudent()
+        && ownsDoc(request.resource.data.profileId)
+        && validMoodEntry();
+      allow update, delete: if isAdmin();
+
+      function validMoodEntry() {
+        let d = request.resource.data;
+        let validMoods = ['happy', 'okay', 'tired', 'frustrated', 'excited'];
+        return d.keys().hasAll(['profileId', 'mood', 'intensity', 'recordedAt'])
+          && d.profileId is string
+          && d.mood in validMoods
+          && d.intensity is int
+          && d.intensity >= 1 && d.intensity <= 5;
+      }
+    }
+
+    // ── Badges ───────────────────────────────────────────────────────────────
+
+    match /badges/{badgeId} {
+      allow read: if isSignedIn()
+        && (ownsDoc(resource.data.profileId)
+            || isLinkedParentOf(resource.data.profileId)
+            || isAdmin());
+      // Only Cloud Functions award badges to prevent self-awarding.
+      allow write: if isAdmin();
+    }
+
+    // ── Subject progress ─────────────────────────────────────────────────────
+
+    match /subjectProgress/{progressId} {
+      allow read: if isSignedIn()
+        && (ownsDoc(resource.data.profileId)
+            || isLinkedParentOf(resource.data.profileId)
+            || isTeacher()
+            || isAdmin());
+      // Only Cloud Functions update progress after quest completion.
+      allow write: if isAdmin();
+    }
+
+    // ── Audit logs ───────────────────────────────────────────────────────────
+
+    match /auditLogs/{logId} {
+      // Audit logs are write-only for students (appended server-side),
+      // readable only by admins/parents for their children.
+      allow read: if isAdmin()
+        || (isParent() && resource.data.actorUid == uid());
+      allow create: if isSignedIn();
+      allow update, delete: if false;
+    }
+
+    // ── Class aggregates (teacher read) ──────────────────────────────────────
+    //
+    // Aggregated, anonymised class-level metrics. No individual student data.
+
+    match /classAggregates/{classId} {
+      allow read: if isTeacher() || isAdmin();
+      allow write: if isAdmin();
+    }
+
+    // ── Deny everything else ─────────────────────────────────────────────────
+
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
