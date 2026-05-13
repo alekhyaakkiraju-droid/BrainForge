@@ -9,31 +9,29 @@ void main() {
     });
 
     test('signIn transitions to authenticated', () {
-      final notifier = AuthStateNotifier();
-      notifier.signIn();
+      final notifier = AuthStateNotifier()..signIn();
       expect(notifier.state, AuthStatus.authenticated);
     });
 
     test('signOut transitions back to unauthenticated', () {
-      final notifier = AuthStateNotifier();
-      notifier.signIn();
-      notifier.signOut();
+      final notifier = AuthStateNotifier()
+        ..signIn()
+        ..signOut();
       expect(notifier.state, AuthStatus.unauthenticated);
     });
 
-    test('notifyListeners is called on signIn', () {
-      final notifier = AuthStateNotifier();
+    test('listenable notified on signIn', () {
       var notified = false;
-      notifier.addListener(() => notified = true);
+      final notifier = AuthStateNotifier();
+      notifier.listenable.addListener(() => notified = true);
       notifier.signIn();
       expect(notified, isTrue);
     });
 
-    test('notifyListeners is called on signOut', () {
-      final notifier = AuthStateNotifier();
-      notifier.signIn();
+    test('listenable notified on signOut', () {
       var notified = false;
-      notifier.addListener(() => notified = true);
+      final notifier = AuthStateNotifier()..signIn();
+      notifier.listenable.addListener(() => notified = true);
       notifier.signOut();
       expect(notified, isTrue);
     });
