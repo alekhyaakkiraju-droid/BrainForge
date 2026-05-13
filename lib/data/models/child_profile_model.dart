@@ -42,7 +42,7 @@ class ChildProfileModel extends HiveObject {
         avatarAssetPath: avatarAssetPath,
       );
 
-  static ChildProfileModel fromDomain(ChildProfile profile) =>
+  factory ChildProfileModel.fromDomain(ChildProfile profile) =>
       ChildProfileModel(
         id: profile.id,
         displayName: profile.displayName,

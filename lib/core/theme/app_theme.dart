@@ -83,7 +83,6 @@ abstract final class AppTheme {
         useMaterial3: true,
         colorScheme: ColorScheme.fromSeed(
           seedColor: AppColors.primary,
-          brightness: Brightness.light,
           surface: AppColors.surface,
         ),
         scaffoldBackgroundColor: AppColors.background,
