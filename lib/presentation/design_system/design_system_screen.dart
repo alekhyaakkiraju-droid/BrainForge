@@ -18,11 +18,11 @@ class DesignSystemScreen extends StatelessWidget {
           backgroundColor: AppColors.primary,
           foregroundColor: Colors.white,
         ),
-        body: SingleChildScrollView(
-          padding: const EdgeInsets.all(AppSpacing.lg),
+        body: const SingleChildScrollView(
+          padding: EdgeInsets.all(AppSpacing.lg),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: const [
+            children: [
               _Section(title: 'Colors', child: _ColorPalette()),
               _Section(title: 'Typography', child: _TypographyScale()),
               _Section(title: 'BrainForgeButton', child: _ButtonShowcase()),
