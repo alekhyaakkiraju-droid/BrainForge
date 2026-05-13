@@ -98,7 +98,8 @@ class _ParentSignupScreenState extends ConsumerState<ParentSignupScreen> {
                     ),
                     const SizedBox(height: AppSpacing.xs),
                     Text(
-                      'You\'ll verify your email before creating child profiles.',
+                      "You'll verify your email before creating child "
+                      'profiles.',
                       style: Theme.of(context)
                           .textTheme
                           .bodyMedium

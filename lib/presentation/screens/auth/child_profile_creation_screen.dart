@@ -66,7 +66,7 @@ class _ChildProfileCreationScreenState
       await ref.read(authStateProvider.notifier).refresh();
     } on FirebaseFunctionsException catch (e) {
       setState(() => _errorMessage = _friendlyError(e.code, e.message));
-    } catch (_) {
+    } on Exception {
       setState(
         () => _errorMessage = 'Something went wrong. Please try again.',
       );
@@ -255,7 +255,7 @@ class _AvatarGrid extends StatelessWidget {
           final isSelected = entry.key == selected;
           return GestureDetector(
             onTap: () => onSelect(entry.key),
-            child: Container(
+            child: DecoratedBox(
               decoration: BoxDecoration(
                 color: isSelected
                     ? AppColors.primary

@@ -34,7 +34,7 @@ class _ConsentScreenState extends ConsumerState<ConsentScreen> {
       await ref.read(authStateProvider.notifier).refresh();
     } on FirebaseFunctionsException catch (e) {
       setState(() => _errorMessage = e.message ?? 'Could not record consent.');
-    } catch (_) {
+    } on Exception {
       setState(() => _errorMessage = 'Something went wrong. Please try again.');
     } finally {
       if (mounted) setState(() => _loading = false);

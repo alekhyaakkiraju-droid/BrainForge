@@ -10,7 +10,7 @@ class FunctionsService {
 
   /// Records parental consent. Idempotent — safe to call more than once.
   Future<void> recordConsent() async {
-    await _functions.httpsCallable('recordConsent').call<void>(null);
+    await _functions.httpsCallable('recordConsent').call<void>();
   }
 
   /// Creates a child account linked to the currently-authenticated parent.

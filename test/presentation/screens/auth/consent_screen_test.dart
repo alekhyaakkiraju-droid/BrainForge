@@ -1,5 +1,5 @@
-import 'package:cloud_functions/cloud_functions.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cloud_functions/cloud_functions.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -16,15 +16,17 @@ class MockFunctionsService extends Mock implements FunctionsService {}
 
 class MockFirebaseAuth extends Mock implements FirebaseAuth {}
 
+// FirebaseFirestore overrides ==; suppress lint for test-only mocking.
+// ignore: avoid_implementing_value_types
 class MockFirebaseFirestore extends Mock implements FirebaseFirestore {}
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
-AuthStateNotifier _stubNotifier() {
+AuthStateNotifier _stubNotifier(Ref ref) {
   final auth = MockFirebaseAuth();
   final firestore = MockFirebaseFirestore();
-  when(() => auth.authStateChanges())
-      .thenAnswer((_) => const Stream.empty());
+  // ignore: unnecessary_lambdas
+  when(() => auth.authStateChanges()).thenReturn(const Stream.empty());
   return AuthStateNotifier(auth, firestore);
 }
 
@@ -32,7 +34,7 @@ Widget _wrap(Widget child, {FunctionsService? functions}) => ProviderScope(
       overrides: [
         if (functions != null)
           functionsServiceProvider.overrideWithValue(functions),
-        authStateProvider.overrideWith((_) => _stubNotifier()),
+        authStateProvider.overrideWith(_stubNotifier),
       ],
       child: MaterialApp(home: child),
     );
@@ -45,7 +47,6 @@ void main() {
     await tester.pumpWidget(_wrap(const ConsentScreen()));
     await tester.pump();
 
-    // Tap without checking the box — onPressed is null.
     await tester.tap(find.text('Continue'), warnIfMissed: false);
     await tester.pump();
 
@@ -65,7 +66,9 @@ void main() {
 
   testWidgets('calls recordConsent when checked and tapped', (tester) async {
     final functions = MockFunctionsService();
-    when(() => functions.recordConsent()).thenAnswer((_) async {});
+    // ignore: unnecessary_lambdas
+    when(() => functions.recordConsent())
+        .thenAnswer((_) => Future<void>.value());
 
     await tester.pumpWidget(
       _wrap(const ConsentScreen(), functions: functions),
@@ -78,12 +81,14 @@ void main() {
     await tester.tap(find.text('Continue'));
     await tester.pump();
 
+    // ignore: unnecessary_lambdas
     verify(() => functions.recordConsent()).called(1);
   });
 
   testWidgets('shows error message on FirebaseFunctionsException',
       (tester) async {
     final functions = MockFunctionsService();
+    // ignore: unnecessary_lambdas
     when(() => functions.recordConsent()).thenThrow(
       FirebaseFunctionsException(
         message: 'Consent recording failed.',
@@ -91,7 +96,9 @@ void main() {
       ),
     );
 
-    await tester.pumpWidget(_wrap(const ConsentScreen(), functions: functions));
+    await tester.pumpWidget(
+      _wrap(const ConsentScreen(), functions: functions),
+    );
     await tester.pump();
 
     await tester.tap(find.byType(CheckboxListTile));

@@ -12,22 +12,23 @@ import 'package:brainforge/presentation/screens/auth/parent_signup_screen.dart';
 
 class MockFirebaseAuth extends Mock implements FirebaseAuth {}
 
+// FirebaseFirestore overrides ==; suppress lint for test-only mocking.
+// ignore: avoid_implementing_value_types
 class MockFirebaseFirestore extends Mock implements FirebaseFirestore {}
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
-AuthStateNotifier _stubNotifier() {
+// ignore: unnecessary_lambdas
+AuthStateNotifier _stubNotifier(Ref ref) {
   final auth = MockFirebaseAuth();
   final firestore = MockFirebaseFirestore();
-  when(() => auth.authStateChanges())
-      .thenAnswer((_) => const Stream.empty());
+  // ignore: unnecessary_lambdas
+  when(() => auth.authStateChanges()).thenReturn(const Stream.empty());
   return AuthStateNotifier(auth, firestore);
 }
 
 Widget _wrap(Widget child) => ProviderScope(
-      overrides: [
-        authStateProvider.overrideWith((_) => _stubNotifier()),
-      ],
+      overrides: [authStateProvider.overrideWith(_stubNotifier)],
       child: MaterialApp(home: child),
     );
 
@@ -39,7 +40,10 @@ void main() {
     await tester.pumpWidget(_wrap(const ParentSignupScreen()));
     await tester.pump();
 
-    expect(find.widgetWithText(TextFormField, 'Email address'), findsOneWidget);
+    expect(
+      find.widgetWithText(TextFormField, 'Email address'),
+      findsOneWidget,
+    );
     expect(find.widgetWithText(TextFormField, 'Password'), findsOneWidget);
     expect(
       find.widgetWithText(TextFormField, 'Confirm password'),

@@ -54,7 +54,7 @@ class _ChildLoginScreenState extends ConsumerState<ChildLoginScreen> {
       setState(() => _errorMessage = _friendlyError(e.code));
     } on FirebaseAuthException {
       setState(() => _errorMessage = 'Sign-in failed. Please try again.');
-    } catch (_) {
+    } on Exception {
       setState(() => _errorMessage = 'Something went wrong. Please retry.');
     } finally {
       if (mounted) setState(() => _loading = false);
@@ -118,8 +118,9 @@ class _ChildLoginScreenState extends ConsumerState<ChildLoginScreen> {
                         filled: true,
                         fillColor: Colors.white,
                       ),
-                      validator: (v) =>
-                          (v == null || v.isEmpty) ? 'Enter your username.' : null,
+                      validator: (v) => (v == null || v.isEmpty)
+                          ? 'Enter your username.'
+                          : null,
                     ),
                     const SizedBox(height: AppSpacing.md),
                     TextFormField(
@@ -133,8 +134,9 @@ class _ChildLoginScreenState extends ConsumerState<ChildLoginScreen> {
                         filled: true,
                         fillColor: Colors.white,
                       ),
-                      validator: (v) =>
-                          (v == null || v.length != 4) ? 'Enter your 4-digit PIN.' : null,
+                      validator: (v) => (v == null || v.length != 4)
+                          ? 'Enter your 4-digit PIN.'
+                          : null,
                     ),
                     if (_errorMessage != null) ...[
                       const SizedBox(height: AppSpacing.sm),

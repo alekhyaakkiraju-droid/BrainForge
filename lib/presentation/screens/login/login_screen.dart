@@ -127,8 +127,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                         filled: true,
                         fillColor: Colors.white,
                       ),
-                      validator: (v) =>
-                          (v == null || v.isEmpty) ? 'Enter your password.' : null,
+                      validator: (v) => (v == null || v.isEmpty)
+                          ? 'Enter your password.'
+                          : null,
                     ),
                     if (_errorMessage != null) ...[
                       const SizedBox(height: AppSpacing.md),

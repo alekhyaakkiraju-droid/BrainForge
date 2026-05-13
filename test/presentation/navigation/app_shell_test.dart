@@ -13,30 +13,32 @@ import 'package:mocktail/mocktail.dart';
 
 class MockFirebaseAuth extends Mock implements FirebaseAuth {}
 
+// FirebaseFirestore overrides ==; suppress lint for test-only mocking.
+// ignore: avoid_implementing_value_types
 class MockFirebaseFirestore extends Mock implements FirebaseFirestore {}
 
 // ── Test notifier ─────────────────────────────────────────────────────────────
 
-/// Subclass that bypasses Firebase by starting with a fixed [AuthState].
-///
-/// [state] is the `@protected` [StateNotifier] setter — accessible here
-/// because [_TestAuthNotifier] is a subclass.
+/// Subclass that starts with a fixed [AuthState] without making any real
+/// Firebase calls — the stream is empty so [_resolveState] is never invoked,
+/// and [state] is set directly via the protected [StateNotifier] setter.
 class _TestAuthNotifier extends AuthStateNotifier {
-  _TestAuthNotifier(AuthState initial, MockFirebaseAuth auth,
-      MockFirebaseFirestore firestore)
-      : super(auth, firestore) {
-    // Override before any async Firebase stream could change it.
+  _TestAuthNotifier(
+    AuthState initial,
+    MockFirebaseAuth auth,
+    MockFirebaseFirestore firestore,
+  ) : super(auth, firestore) {
     state = initial;
   }
 }
 
 // ── Helper ────────────────────────────────────────────────────────────────────
 
-AuthStateNotifier _notifierForStatus(AuthStatus status) {
+AuthStateNotifier _notifierWithStatus(AuthStatus status, Ref ref) {
   final auth = MockFirebaseAuth();
   final firestore = MockFirebaseFirestore();
-  when(() => auth.authStateChanges())
-      .thenAnswer((_) => const Stream.empty());
+  // ignore: unnecessary_lambdas
+  when(() => auth.authStateChanges()).thenReturn(const Stream.empty());
   return _TestAuthNotifier(
     AuthState(
       status: status,
@@ -50,7 +52,8 @@ AuthStateNotifier _notifierForStatus(AuthStatus status) {
 Widget buildApp({required AuthStatus initialAuth}) => ProviderScope(
       overrides: [
         authStateProvider.overrideWith(
-          (_) => _notifierForStatus(initialAuth),
+          // ignore: unnecessary_lambdas
+          (ref) => _notifierWithStatus(initialAuth, ref),
         ),
       ],
       child: Consumer(
@@ -93,7 +96,8 @@ void main() {
       expect(find.byType(NavigationBar), findsNothing);
     });
 
-    testWidgets('tap targets are at least ${AppSpacing.minTouchTarget}dp',
+    testWidgets(
+        'tap targets are at least ${AppSpacing.minTouchTarget}dp',
         (tester) async {
       tester.view.physicalSize = const Size(400, 800);
       tester.view.devicePixelRatio = 1;
@@ -104,8 +108,12 @@ void main() {
       );
       await tester.pumpAndSettle();
 
-      final bar = tester.widget<NavigationBar>(find.byType(NavigationBar));
-      expect(bar.height, greaterThanOrEqualTo(AppSpacing.minTouchTarget));
+      final bar =
+          tester.widget<NavigationBar>(find.byType(NavigationBar));
+      expect(
+        bar.height,
+        greaterThanOrEqualTo(AppSpacing.minTouchTarget),
+      );
     });
   });
 
@@ -116,7 +124,6 @@ void main() {
       );
       await tester.pumpAndSettle();
 
-      // Login screen shows the BrainForge brand and parent sign-in label.
       expect(find.text('BrainForge'), findsOneWidget);
       expect(find.text('Parent sign-in'), findsOneWidget);
     });
@@ -131,8 +138,8 @@ void main() {
       expect(find.text('Parent sign-in'), findsNothing);
     });
 
-    testWidgets('parentUnverified user sees verify-email screen',
-        (tester) async {
+    testWidgets(
+        'parentUnverified user sees verify-email screen', (tester) async {
       await tester.pumpWidget(
         buildApp(initialAuth: AuthStatus.parentUnverified),
       );
@@ -141,7 +148,8 @@ void main() {
       expect(find.text('Check your inbox'), findsOneWidget);
     });
 
-    testWidgets('parentNeedsConsent user sees consent screen', (tester) async {
+    testWidgets('parentNeedsConsent user sees consent screen',
+        (tester) async {
       await tester.pumpWidget(
         buildApp(initialAuth: AuthStatus.parentNeedsConsent),
       );
@@ -150,7 +158,8 @@ void main() {
       expect(find.text('Parental Consent'), findsOneWidget);
     });
 
-    testWidgets('parentConsented user sees create-child screen', (tester) async {
+    testWidgets(
+        'parentConsented user sees create-child screen', (tester) async {
       await tester.pumpWidget(
         buildApp(initialAuth: AuthStatus.parentConsented),
       );
@@ -161,7 +170,8 @@ void main() {
   });
 
   group('State preservation', () {
-    testWidgets('counter persists when navigating between tabs', (tester) async {
+    testWidgets('counter persists when navigating between tabs',
+        (tester) async {
       tester.view.physicalSize = const Size(400, 800);
       tester.view.devicePixelRatio = 1;
       addTearDown(tester.view.resetPhysicalSize);
@@ -171,21 +181,17 @@ void main() {
       );
       await tester.pumpAndSettle();
 
-      // Tap + on Quest Board counter
       await tester.tap(
         find.widgetWithIcon(IconButton, Icons.add).first,
       );
       await tester.pumpAndSettle();
 
-      // Navigate to Focus Timer
       await tester.tap(find.byIcon(Icons.timer_outlined));
       await tester.pumpAndSettle();
 
-      // Navigate back to Quest Board
       await tester.tap(find.byIcon(Icons.grid_view_outlined));
       await tester.pumpAndSettle();
 
-      // StatefulShellRoute keeps the branch alive — counter should be 1
       expect(find.text('1'), findsOneWidget);
     });
   });
