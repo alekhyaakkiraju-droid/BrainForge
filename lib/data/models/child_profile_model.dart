@@ -15,6 +15,16 @@ class ChildProfileModel extends HiveObject {
     this.avatarAssetPath,
   });
 
+  factory ChildProfileModel.fromDomain(ChildProfile profile) =>
+      ChildProfileModel(
+        id: profile.id,
+        displayName: profile.displayName,
+        ageRangeIndex: profile.ageRange.index,
+        activeModeIndex: profile.activeMode.index,
+        totalXp: profile.totalXp,
+        avatarAssetPath: profile.avatarAssetPath,
+      );
+
   @HiveField(0)
   String id;
 
@@ -40,16 +50,6 @@ class ChildProfileModel extends HiveObject {
         activeMode: AppMode.values[activeModeIndex],
         totalXp: totalXp,
         avatarAssetPath: avatarAssetPath,
-      );
-
-  factory ChildProfileModel.fromDomain(ChildProfile profile) =>
-      ChildProfileModel(
-        id: profile.id,
-        displayName: profile.displayName,
-        ageRangeIndex: profile.ageRange.index,
-        activeModeIndex: profile.activeMode.index,
-        totalXp: profile.totalXp,
-        avatarAssetPath: profile.avatarAssetPath,
       );
 }
 
