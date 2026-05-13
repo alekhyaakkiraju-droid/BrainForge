@@ -53,57 +53,68 @@ const _navItems = [
   ),
 ];
 
-/// Adaptive navigation shell.
+/// Adaptive navigation shell backed by [StatefulNavigationShell].
+///
+/// [StatefulNavigationShell] keeps each branch's navigator alive so widget
+/// state (e.g. the counter on placeholder screens) survives tab switches.
 ///
 /// On wide tablets (≥600 dp) a [NavigationRail] is shown on the left.
 /// On narrower screens a [NavigationBar] is shown at the bottom.
 /// All tap targets are ≥48 dp per ADHD-UX constraints.
 class AppShell extends StatelessWidget {
-  const AppShell({required this.child, super.key});
+  const AppShell({required this.navigationShell, super.key});
 
-  final Widget child;
+  final StatefulNavigationShell navigationShell;
+
+  void _onTap(int index) {
+    navigationShell.goBranch(
+      index,
+      initialLocation: index == navigationShell.currentIndex,
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
-    final location = GoRouterState.of(context).matchedLocation;
-    final selectedIndex = _indexFor(location);
+    final selectedIndex = navigationShell.currentIndex;
     final isWide = MediaQuery.sizeOf(context).width >= 600;
 
     if (isWide) {
       return Scaffold(
         body: Row(
           children: [
-            _SideRail(selectedIndex: selectedIndex),
+            _SideRail(
+              selectedIndex: selectedIndex,
+              onTap: _onTap,
+            ),
             const VerticalDivider(width: 1),
-            Expanded(child: child),
+            Expanded(child: navigationShell),
           ],
         ),
       );
     }
 
     return Scaffold(
-      body: child,
-      bottomNavigationBar: _BottomBar(selectedIndex: selectedIndex),
+      body: navigationShell,
+      bottomNavigationBar: _BottomBar(
+        selectedIndex: selectedIndex,
+        onTap: _onTap,
+      ),
     );
-  }
-
-  static int _indexFor(String location) {
-    final idx = _navItems.indexWhere((i) => i.route == location);
-    return idx < 0 ? 0 : idx;
   }
 }
 
 // ── Side rail (tablet wide) ──────────────────────────────────────────────────
 
 class _SideRail extends StatelessWidget {
-  const _SideRail({required this.selectedIndex});
+  const _SideRail({required this.selectedIndex, required this.onTap});
 
   final int selectedIndex;
+  final void Function(int) onTap;
 
   @override
   Widget build(BuildContext context) => NavigationRail(
         selectedIndex: selectedIndex,
-        onDestinationSelected: (i) => context.go(_navItems[i].route),
+        onDestinationSelected: onTap,
         labelType: NavigationRailLabelType.all,
         minWidth: AppSpacing.minTouchTarget + AppSpacing.md,
         destinations: _navItems
@@ -130,14 +141,15 @@ class _SideRail extends StatelessWidget {
 // ── Bottom bar (phone / narrow tablet) ──────────────────────────────────────
 
 class _BottomBar extends StatelessWidget {
-  const _BottomBar({required this.selectedIndex});
+  const _BottomBar({required this.selectedIndex, required this.onTap});
 
   final int selectedIndex;
+  final void Function(int) onTap;
 
   @override
   Widget build(BuildContext context) => NavigationBar(
         selectedIndex: selectedIndex,
-        onDestinationSelected: (i) => context.go(_navItems[i].route),
+        onDestinationSelected: onTap,
         height: AppSpacing.minTouchTarget + AppSpacing.lg,
         destinations: _navItems
             .map(

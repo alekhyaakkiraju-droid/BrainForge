@@ -120,7 +120,7 @@ void main() {
       await tester.tap(find.byIcon(Icons.grid_view_outlined));
       await tester.pumpAndSettle();
 
-      // Counter should still be 1
+      // StatefulShellRoute keeps the branch alive — counter should be 1
       expect(find.text('1'), findsOneWidget);
     });
   });
