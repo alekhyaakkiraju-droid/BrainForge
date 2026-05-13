@@ -81,6 +81,5 @@ class FirestoreSubjectProgressRepository
 }
 
 final subjectProgressRepositoryProvider =
-    Provider<SubjectProgressRepository>((ref) {
-  return FirestoreSubjectProgressRepository(ref.watch(firestoreProvider));
-});
+    Provider<SubjectProgressRepository>((ref) =>
+    FirestoreSubjectProgressRepository(ref.watch(firestoreProvider)));
