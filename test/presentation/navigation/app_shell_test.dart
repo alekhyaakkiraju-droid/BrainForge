@@ -1,7 +1,9 @@
 import 'package:brainforge/core/constants/app_spacing.dart';
 import 'package:brainforge/core/router/app_router.dart';
 import 'package:brainforge/core/theme/app_theme.dart';
+import 'package:brainforge/data/models/quest_model.dart';
 import 'package:brainforge/domain/auth/auth_state.dart';
+import 'package:brainforge/presentation/screens/quest_board/quest_board_provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -48,6 +50,10 @@ Widget buildApp({required AuthStatus initialAuth}) => ProviderScope(
         authStateProvider.overrideWith(
           // ignore: unnecessary_lambdas
           (ref) => _notifierWithStatus(initialAuth, ref),
+        ),
+        // Stub the quest stream so pumpAndSettle does not hang on live queries.
+        questBoardProvider.overrideWith(
+          (_) => Stream<List<QuestModel>>.value(const []),
         ),
       ],
       child: Consumer(
