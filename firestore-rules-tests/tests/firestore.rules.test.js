@@ -427,7 +427,6 @@ describe('questProgress/{progressId}', () => {
     );
   });
 });
-
 // ── Audit logs (immutability) ─────────────────────────────────────────────────
 
 describe('auditLogs/{logId}', () => {
@@ -445,14 +444,12 @@ describe('auditLogs/{logId}', () => {
     });
   });
 
-  it('TEST-026: signed-in user can create an audit log entry', async () => {
-    await assertSucceeds(
+  it('TEST-026: signed-in user can create an audit log entry', async () => {    await assertSucceeds(
       parentCtx().firestore().collection('auditLogs').doc().set(logEntry)
     );
   });
 
-  it('TEST-027: parent cannot update an audit log entry', async () => {
-    await assertFails(
+  it('TEST-027: parent cannot update an audit log entry', async () => {    await assertFails(
       parentCtx()
         .firestore()
         .collection('auditLogs')
@@ -461,8 +458,7 @@ describe('auditLogs/{logId}', () => {
     );
   });
 
-  it('TEST-028: student cannot update an audit log entry', async () => {
-    await assertFails(
+  it('TEST-028: student cannot update an audit log entry', async () => {    await assertFails(
       studentCtx()
         .firestore()
         .collection('auditLogs')
@@ -471,20 +467,17 @@ describe('auditLogs/{logId}', () => {
     );
   });
 
-  it('TEST-029: parent cannot delete an audit log entry', async () => {
-    await assertFails(
+  it('TEST-029: parent cannot delete an audit log entry', async () => {    await assertFails(
       parentCtx().firestore().collection('auditLogs').doc('log-1').delete()
     );
   });
 
-  it('TEST-030: student cannot delete an audit log entry', async () => {
-    await assertFails(
+  it('TEST-030: student cannot delete an audit log entry', async () => {    await assertFails(
       studentCtx().firestore().collection('auditLogs').doc('log-1').delete()
     );
   });
 
-  it('TEST-031: unauthenticated user cannot create an audit log entry', async () => {
-    await assertFails(
+  it('TEST-031: unauthenticated user cannot create an audit log entry', async () => {    await assertFails(
       testEnv
         .unauthenticatedContext()
         .firestore()

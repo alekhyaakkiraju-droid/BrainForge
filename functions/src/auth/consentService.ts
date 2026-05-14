@@ -64,7 +64,9 @@ export async function handleRecordConsent(
   return { success: true, alreadyRecorded: false };
 }
 
-export const recordConsent = onCall(async (request) => {
+// enforceAppCheck rejects requests missing a valid App Check token with HTTP
+// 401 before the handler runs — protecting child data from API abuse.
+export const recordConsent = onCall({ enforceAppCheck: true }, async (request) => {
   if (!request.auth) {
     throw new HttpsError("unauthenticated", "Authentication required.");
   }
