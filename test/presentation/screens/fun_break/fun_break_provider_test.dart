@@ -112,6 +112,9 @@ void main() {
     test('canReturn becomes true after 3 minutes', () {
       fakeAsync((fake) {
         final container = _makeContainer(mockSessionRepo);
+        // Listen to prevent auto-dispose during fakeAsync time advancement.
+        final sub = container.listen(funBreakProvider, (_, __) {});
+        addTearDown(sub.close);
         addTearDown(container.dispose);
 
         fake.elapse(const Duration(seconds: kBreakDurationSeconds + 1));
@@ -123,6 +126,9 @@ void main() {
     test('records break session after countdown', () {
       fakeAsync((fake) {
         final container = _makeContainer(mockSessionRepo);
+        // Listen to prevent auto-dispose during fakeAsync time advancement.
+        final sub = container.listen(funBreakProvider, (_, __) {});
+        addTearDown(sub.close);
         addTearDown(container.dispose);
 
         fake.elapse(const Duration(seconds: kBreakDurationSeconds + 1));

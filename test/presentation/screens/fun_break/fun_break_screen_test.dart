@@ -1,3 +1,4 @@
+import 'package:brainforge/data/models/session_model.dart';
 import 'package:brainforge/data/repositories/session_repository_impl.dart';
 import 'package:brainforge/domain/auth/auth_state.dart';
 import 'package:brainforge/domain/repositories/session_repository.dart';
@@ -73,6 +74,18 @@ FunBreakState _makingBreakState({
     );
 
 void main() {
+  setUpAll(() {
+    registerFallbackValue(
+      SessionModel(
+        id: 'fallback',
+        profileId: 'u1',
+        startedAt: DateTime(2026),
+        durationSeconds: 180,
+        wasCompleted: true,
+      ),
+    );
+  });
+
   testWidgets('shows "Time for a break!" header during countdown',
       (tester) async {
     await tester.pumpWidget(
