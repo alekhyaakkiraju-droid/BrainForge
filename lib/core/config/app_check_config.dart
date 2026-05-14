@@ -6,7 +6,6 @@ import 'package:flutter/foundation.dart';
 typedef AppCheckActivator = Future<void> Function({
   required AndroidProvider androidProvider,
   required AppleProvider appleProvider,
-  WebProvider? webProvider,
 });
 
 /// Activates Firebase App Check with platform-appropriate attestation.
