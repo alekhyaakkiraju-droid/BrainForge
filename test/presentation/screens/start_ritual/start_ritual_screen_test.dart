@@ -51,10 +51,16 @@ Widget _wrapWithRouter(Widget child) {
   return ProviderScope(
     overrides: [
       authStateProvider.overrideWith(_stubAuth),
-      ritualAudioPlayerProvider.overrideWithValue(MockAudioPlayer()),
+      ritualAudioPlayerProvider.overrideWithValue(_stubbedPlayer()),
     ],
     child: MaterialApp.router(routerConfig: router),
   );
+}
+
+MockAudioPlayer _stubbedPlayer() {
+  final player = MockAudioPlayer();
+  when(() => player.play(any())).thenAnswer((_) async {});
+  return player;
 }
 
 void main() {
