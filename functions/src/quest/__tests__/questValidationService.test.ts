@@ -33,7 +33,7 @@ function makeDb({
     if (name === "xp_records") return xpRecordsCol;
     // quests / questProgress
     return {
-      doc: jest.fn((_?: string) => ({
+      doc: jest.fn(() => ({
         get: jest.fn().mockResolvedValue(
           name === "quests" ? questSnap : progressSnap
         ),
