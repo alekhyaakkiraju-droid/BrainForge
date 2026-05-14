@@ -169,10 +169,10 @@ class _CardContent extends StatelessWidget {
                         borderRadius:
                             BorderRadius.circular(AppSpacing.cardRadius),
                       ),
-                      child: Align(
+                      child: const Align(
                         alignment: Alignment.centerRight,
                         child: Padding(
-                          padding: const EdgeInsets.only(right: AppSpacing.md),
+                          padding: EdgeInsets.only(right: AppSpacing.md),
                           child: Icon(
                             Icons.check_circle_rounded,
                             color: AppColors.success,
