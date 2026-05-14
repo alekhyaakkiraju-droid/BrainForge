@@ -5,6 +5,7 @@ import 'package:brainforge/presentation/screens/start_ritual/start_ritual_screen
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
@@ -16,6 +17,15 @@ class MockFirebaseAuth extends Mock implements FirebaseAuth {}
 class MockFirebaseFirestore extends Mock implements FirebaseFirestore {}
 
 class MockAudioPlayer extends Mock implements AudioPlayer {}
+
+/// A [CachingAssetBundle] that throws for every asset load, simulating a
+/// missing-asset scenario so Lottie's errorBuilder is reliably triggered.
+class _AlwaysFailingBundle extends CachingAssetBundle {
+  @override
+  Future<ByteData> load(String key) async {
+    throw Exception('Simulated missing asset: $key');
+  }
+}
 
 AuthStateNotifier _stubAuth(Ref ref) {
   final auth = MockFirebaseAuth();
@@ -71,15 +81,17 @@ void main() {
 
   testWidgets('renders the error-builder rocket icon when Lottie asset missing',
       (tester) async {
-    // runAsync lets the real async asset load happen so the asset-not-found
-    // error is thrown and Lottie calls errorBuilder.
-    await tester.runAsync(() async {
-      await tester.pumpWidget(
-        _wrapWithRouter(const StartRitualScreen(questId: 'q-1')),
-      );
-      await Future<void>.delayed(const Duration(milliseconds: 200));
-    });
+    // Wrap with a bundle that throws for every asset load so Lottie
+    // deterministically calls errorBuilder in the headless CI environment.
+    await tester.pumpWidget(
+      DefaultAssetBundle(
+        bundle: _AlwaysFailingBundle(),
+        child: _wrapWithRouter(const StartRitualScreen(questId: 'q-1')),
+      ),
+    );
+    // The asset load is async; pump until the errorBuilder rebuild settles.
     await tester.pump();
+    await tester.pump(const Duration(milliseconds: 100));
     expect(find.byIcon(Icons.rocket_launch_rounded), findsOneWidget);
   });
 
