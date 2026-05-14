@@ -74,7 +74,11 @@ void main() {
     await tester.pumpWidget(
       _wrapWithRouter(const StartRitualScreen(questId: 'q-1')),
     );
+    // Multiple pumps allow the async Lottie asset load to fail and call
+    // errorBuilder — a single pump is not enough.
     await tester.pump();
+    await tester.pump(const Duration(milliseconds: 100));
+    await tester.pump(const Duration(milliseconds: 100));
     // The Lottie.asset errorBuilder shows a rocket icon when asset is absent.
     expect(find.byIcon(Icons.rocket_launch_rounded), findsOneWidget);
   });
