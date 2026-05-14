@@ -133,7 +133,7 @@ void main() {
       );
       await tester.pumpAndSettle();
 
-      expect(find.text('Quest Board'), findsOneWidget);
+      expect(find.text("Today's Quests"), findsOneWidget);
       expect(find.text('Parent sign-in'), findsNothing);
     });
 
@@ -183,17 +183,24 @@ void main() {
       );
       await tester.pumpAndSettle();
 
+      // Navigate to Focus tab (still a placeholder with a counter).
+      await tester.tap(find.byIcon(Icons.timer_outlined));
+      await tester.pumpAndSettle();
+
+      // Increment the counter on the Focus placeholder.
       await tester.tap(
         find.widgetWithIcon(IconButton, Icons.add).first,
       );
       await tester.pumpAndSettle();
 
-      await tester.tap(find.byIcon(Icons.timer_outlined));
-      await tester.pumpAndSettle();
-
+      // Switch to Quests tab and back.
       await tester.tap(find.byIcon(Icons.grid_view_outlined));
       await tester.pumpAndSettle();
 
+      await tester.tap(find.byIcon(Icons.timer_outlined));
+      await tester.pumpAndSettle();
+
+      // Counter should still be 1.
       expect(find.text('1'), findsOneWidget);
     });
   });
