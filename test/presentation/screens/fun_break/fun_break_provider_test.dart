@@ -1,3 +1,4 @@
+import 'package:brainforge/data/models/session_model.dart';
 import 'package:brainforge/data/repositories/session_repository_impl.dart';
 import 'package:brainforge/domain/auth/auth_state.dart';
 import 'package:brainforge/domain/repositories/session_repository.dart';
@@ -39,6 +40,18 @@ ProviderContainer _makeContainer(MockSessionRepository sessionRepo) {
 
 void main() {
   late MockSessionRepository mockSessionRepo;
+
+  setUpAll(() {
+    registerFallbackValue(
+      SessionModel(
+        id: 'fallback',
+        profileId: 'u1',
+        startedAt: DateTime(2026),
+        durationSeconds: 180,
+        wasCompleted: true,
+      ),
+    );
+  });
 
   setUp(() {
     mockSessionRepo = MockSessionRepository();
