@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:brainforge/data/services/deletion_request_service.dart';
 import 'package:brainforge/domain/auth/auth_state.dart';
 import 'package:brainforge/presentation/screens/profile/parent_settings_screen.dart';
@@ -44,12 +46,8 @@ Widget _wrap(Widget child, {DeletionRequestService? service}) => ProviderScope(
 void main() {
   testWidgets('shows CircularProgressIndicator while loading', (tester) async {
     final service = MockDeletionRequestService();
-    // ignore: unnecessary_lambdas
     when(() => service.fetchChildProfiles('parent-uid-1'))
-        .thenAnswer((_) => Future<List<ChildProfile>>.delayed(
-              const Duration(seconds: 5),
-              () => [],
-            ));
+        .thenAnswer((_) => Completer<List<ChildProfile>>().future);
 
     await tester.pumpWidget(
       _wrap(const ParentSettingsScreen(), service: service),
