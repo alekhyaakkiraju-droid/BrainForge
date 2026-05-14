@@ -373,6 +373,13 @@ describe('questProgress/{progressId}', () => {
     completedStepIndices: [0, 1],
   };
 
+  beforeEach(async () => {
+    await testEnv.withSecurityRulesDisabled(async (ctx) => {
+      const db = ctx.firestore();
+      await db.collection('users').doc(STUDENT_UID).set({ parentId: PARENT_UID, role: 'student' });
+    });
+  });
+
   it('TEST-022: student can create their own quest progress', async () => {
     await assertSucceeds(
       studentCtx()
@@ -395,11 +402,6 @@ describe('questProgress/{progressId}', () => {
 
   it('TEST-024: parent can read their child\'s progress', async () => {
     await testEnv.withSecurityRulesDisabled(async (ctx) => {
-      await ctx
-        .firestore()
-        .collection('users')
-        .doc(STUDENT_UID)
-        .set({ parentId: PARENT_UID, role: 'student' });
       await ctx
         .firestore()
         .collection('questProgress')

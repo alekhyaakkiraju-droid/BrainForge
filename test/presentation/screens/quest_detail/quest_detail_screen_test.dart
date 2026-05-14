@@ -206,7 +206,7 @@ void main() {
   });
 
   testWidgets('interaction step shows "Done! ✓" button', (tester) async {
-    final interactionStep = const QuestStepModel(
+    const interactionStep = QuestStepModel(
       id: 's1',
       questId: 'q1',
       stepNumber: 1,
