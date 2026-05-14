@@ -1,8 +1,9 @@
+import 'package:flutter/material.dart';
+
 import '../../../core/constants/app_spacing.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../data/models/quest_model.dart';
 import 'quest_board_provider.dart';
-import 'package:flutter/material.dart';
 
 /// A visual quest card for the Quest Board.
 ///

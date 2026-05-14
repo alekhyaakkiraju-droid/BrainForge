@@ -1,8 +1,9 @@
-import '../../../data/models/quest_model.dart';
-import '../../../data/repositories/quest_repository_impl.dart';
-import 'package:brainforge/domain/auth/auth_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+import '../../../data/models/quest_model.dart';
+import '../../../data/repositories/quest_repository_impl.dart';
+import '../../../domain/auth/auth_state.dart';
 
 /// Streams today's quests for the authenticated user and groups them into
 /// morning / afternoon / evening sections for the Quest Board.
