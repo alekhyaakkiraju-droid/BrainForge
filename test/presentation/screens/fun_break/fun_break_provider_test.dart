@@ -59,7 +59,7 @@ void main() {
     });
 
     test('progress is 1 when countdown reaches 0', () {
-      final state = const FunBreakState(
+      const state = FunBreakState(
         activity: BreakActivity.breathing,
         remainingSeconds: 0,
         canReturn: true,
