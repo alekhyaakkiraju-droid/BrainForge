@@ -15,9 +15,9 @@ import '../../presentation/screens/login/login_screen.dart';
 import '../../presentation/screens/mood/mood_checkin_screen.dart';
 import '../../presentation/screens/placeholder_screen.dart';
 import '../../presentation/screens/profile/profile_screen.dart';
-import '../../presentation/screens/start_ritual/start_ritual_screen.dart';
 import '../../presentation/screens/progress/progress_map_screen.dart';
 import '../../presentation/screens/quest_board/quest_board_screen.dart';
+import '../../presentation/screens/start_ritual/start_ritual_screen.dart';
 import '../../presentation/screens/timer/timer_screen.dart';
 import '../../presentation/shell/app_shell.dart';
 
