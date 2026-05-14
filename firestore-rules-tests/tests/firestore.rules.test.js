@@ -364,6 +364,73 @@ describe('classAggregates/{classId}', () => {
   });
 });
 
+// ── Audit logs (immutability) ─────────────────────────────────────────────────
+
+describe('auditLogs/{logId}', () => {
+  const logEntry = {
+    actor: PARENT_UID,
+    timestamp: new Date(),
+    resource: `users/${STUDENT_UID}`,
+    operation: 'create',
+    details: {},
+  };
+
+  beforeEach(async () => {
+    await testEnv.withSecurityRulesDisabled(async (ctx) => {
+      await ctx.firestore().collection('auditLogs').doc('log-1').set(logEntry);
+    });
+  });
+
+  it('TEST-022: signed-in user can create an audit log entry', async () => {
+    await assertSucceeds(
+      parentCtx().firestore().collection('auditLogs').doc().set(logEntry)
+    );
+  });
+
+  it('TEST-023: parent cannot update an audit log entry', async () => {
+    await assertFails(
+      parentCtx()
+        .firestore()
+        .collection('auditLogs')
+        .doc('log-1')
+        .update({ operation: 'tampered' })
+    );
+  });
+
+  it('TEST-024: student cannot update an audit log entry', async () => {
+    await assertFails(
+      studentCtx()
+        .firestore()
+        .collection('auditLogs')
+        .doc('log-1')
+        .update({ operation: 'tampered' })
+    );
+  });
+
+  it('TEST-025: parent cannot delete an audit log entry', async () => {
+    await assertFails(
+      parentCtx().firestore().collection('auditLogs').doc('log-1').delete()
+    );
+  });
+
+  it('TEST-026: student cannot delete an audit log entry', async () => {
+    await assertFails(
+      studentCtx().firestore().collection('auditLogs').doc('log-1').delete()
+    );
+  });
+
+  it('TEST-027: unauthenticated user cannot create an audit log entry', async () => {
+    await assertFails(
+      testEnv
+        .unauthenticatedContext()
+        .firestore()
+        .collection('auditLogs')
+        .doc()
+        .set(logEntry)
+    );
+  });
+});
+
 // ── Catch-all deny ────────────────────────────────────────────────────────────
 
 describe('catch-all deny', () => {
