@@ -1,10 +1,11 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 import '../../../core/constants/app_spacing.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../data/services/deletion_request_service.dart';
 import '../../../domain/auth/auth_state.dart';
 import '../../widgets/brainforge_widgets.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class ParentSettingsScreen extends ConsumerStatefulWidget {
   const ParentSettingsScreen({super.key});
