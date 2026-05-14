@@ -1,3 +1,4 @@
+import 'package:brainforge/data/models/session_model.dart';
 import 'package:brainforge/data/repositories/session_repository_impl.dart';
 import 'package:brainforge/domain/auth/auth_state.dart';
 import 'package:brainforge/domain/repositories/session_repository.dart';
@@ -61,6 +62,18 @@ class _StubTimerNotifier extends TimerNotifier {
 }
 
 void main() {
+  setUpAll(() {
+    registerFallbackValue(
+      SessionModel(
+        id: 'fallback',
+        profileId: 'u1',
+        startedAt: DateTime(2026),
+        durationSeconds: 900,
+        wasCompleted: false,
+      ),
+    );
+  });
+
   testWidgets('shows duration picker when timer is idle', (tester) async {
     await tester.pumpWidget(
       _wrap(

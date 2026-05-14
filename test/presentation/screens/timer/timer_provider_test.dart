@@ -41,9 +41,7 @@ ProviderContainer _makeContainer(MockSessionRepository sessionRepo) {
 void main() {
   late MockSessionRepository mockSessionRepo;
 
-  setUp(() {
-    mockSessionRepo = MockSessionRepository();
-    when(() => mockSessionRepo.save(any())).thenAnswer((_) async {});
+  setUpAll(() {
     registerFallbackValue(
       SessionModel(
         id: 'fallback',
@@ -53,6 +51,11 @@ void main() {
         wasCompleted: false,
       ),
     );
+  });
+
+  setUp(() {
+    mockSessionRepo = MockSessionRepository();
+    when(() => mockSessionRepo.save(any())).thenAnswer((_) async {});
   });
 
   group('TimerState', () {
