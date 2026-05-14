@@ -17,8 +17,7 @@ class MockFirebaseAuth extends Mock implements FirebaseAuth {}
 // ignore: avoid_implementing_value_types
 class MockFirebaseFirestore extends Mock implements FirebaseFirestore {}
 
-class _StubNotifier
-    extends AutoDisposeNotifier<AsyncValue<QuestDetailState>> {
+class _StubNotifier extends QuestDetailNotifier {
   _StubNotifier(this._initial);
   final AsyncValue<QuestDetailState> _initial;
 

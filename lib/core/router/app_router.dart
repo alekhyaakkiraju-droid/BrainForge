@@ -13,13 +13,10 @@ import '../../presentation/screens/auth/parent_signup_screen.dart';
 import '../../presentation/screens/badges/badges_screen.dart';
 import '../../presentation/screens/login/login_screen.dart';
 import '../../presentation/screens/mood/mood_checkin_screen.dart';
-import '../../presentation/screens/placeholder_screen.dart';
-import '../../presentation/screens/profile/parent_settings_screen.dart';
 import '../../presentation/screens/profile/profile_screen.dart';
 import '../../presentation/screens/progress/progress_map_screen.dart';
 import '../../presentation/screens/quest_board/quest_board_screen.dart';
 import '../../presentation/screens/quest_detail/quest_detail_screen.dart';
-import '../../presentation/screens/start_ritual/start_ritual_screen.dart';
 import '../../presentation/screens/timer/timer_screen.dart';
 import '../../presentation/shell/app_shell.dart';
 
@@ -38,9 +35,7 @@ abstract final class AppRoutes {
   static const profile = '/profile';
   static const badges = '/badges';
   static const moodCheckin = '/mood-checkin';
-  static const parentSettings = '/parent-settings';
   static const questDetail = '/quest-detail';
-  static const startRitual = '/start-ritual';
 
   // Debug only
   static const designSystem = '/design-system';
@@ -118,16 +113,6 @@ final appRouterProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: AppRoutes.moodCheckin,
         builder: (context, state) => const MoodCheckinScreen(),
-      ),
-      GoRoute(
-        path: AppRoutes.parentSettings,
-        builder: (context, state) => const ParentSettingsScreen(),
-      ),
-      GoRoute(
-        path: AppRoutes.startRitual,
-        builder: (context, state) => StartRitualScreen(
-          questId: (state.extra as String?) ?? '',
-        ),
       ),
       GoRoute(
         path: AppRoutes.questDetail,
