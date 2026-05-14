@@ -131,8 +131,10 @@ void main() {
       ),
     );
 
-    expect(find.textContaining('Breathe'), findsOneWidget);
-    expect(find.textContaining('Dance'), findsOneWidget);
+    // 'Breathe' appears in both the tab label and the breathing-phase text,
+    // so we check for at least one occurrence of each.
+    expect(find.textContaining('Breathe'), findsAtLeast(1));
+    expect(find.textContaining('Dance'), findsAtLeast(1));
   });
 
   testWidgets('breathing activity is shown by default', (tester) async {
@@ -147,6 +149,10 @@ void main() {
   });
 
   testWidgets('dance activity shows move prompt', (tester) async {
+    tester.view.physicalSize = const Size(800, 1200);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.resetPhysicalSize);
+
     await tester.pumpWidget(
       _wrap(
         const FunBreakScreen(),
