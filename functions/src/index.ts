@@ -5,4 +5,3 @@ export { healthCheck } from "./health/healthCheck";
 export { recordConsent } from "./auth/consentService";
 export { createChildAccount, childSignIn } from "./auth/childAccountService";
 export { validateQuestSubmission } from "./quest/questValidationService";
-export { processDataDeletion } from "./deletion/deletionService";
