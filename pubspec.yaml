@@ -8,6 +8,7 @@ environment:
   flutter: ">=3.22.0"
 
 dependencies:
+  audioplayers: ^6.0.0
   cloud_firestore: ^5.2.1
   cloud_functions: ^5.1.0
   equatable: ^2.0.5
@@ -44,3 +45,4 @@ flutter:
     - assets/animations/
     - assets/icons/
     - assets/images/
+    - assets/sounds/
