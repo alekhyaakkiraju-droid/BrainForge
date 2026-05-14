@@ -1,8 +1,8 @@
-import 'package:brainforge/core/constants/app_spacing.dart';
-import 'package:brainforge/core/theme/app_theme.dart';
-import 'package:brainforge/data/services/deletion_request_service.dart';
-import 'package:brainforge/domain/auth/auth_state.dart';
-import 'package:brainforge/presentation/widgets/brainforge_widgets.dart';
+import '../../../core/constants/app_spacing.dart';
+import '../../../core/theme/app_theme.dart';
+import '../../../data/services/deletion_request_service.dart';
+import '../../../domain/auth/auth_state.dart';
+import '../../widgets/brainforge_widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 

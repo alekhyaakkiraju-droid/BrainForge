@@ -23,14 +23,13 @@ AuthStateNotifier _stubParentNotifier(Ref ref) {
   // ignore: unnecessary_lambdas
   when(() => auth.authStateChanges())
       .thenAnswer((_) => const Stream.empty());
-  final notifier = AuthStateNotifier(auth, firestore);
-  notifier.state = const AuthState(
-    status: AuthStatus.authenticated,
-    role: UserRole.parent,
-    uid: 'parent-uid-1',
-    displayName: 'Test Parent',
-  );
-  return notifier;
+  return AuthStateNotifier(auth, firestore)
+    ..state = const AuthState(
+      status: AuthStatus.authenticated,
+      role: UserRole.parent,
+      uid: 'parent-uid-1',
+      displayName: 'Test Parent',
+    );
 }
 
 Widget _wrap(Widget child, {DeletionRequestService? service}) => ProviderScope(
