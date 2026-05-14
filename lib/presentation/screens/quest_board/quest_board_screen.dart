@@ -1,11 +1,11 @@
 import 'dart:async';
 
-import 'package:brainforge/core/constants/app_spacing.dart';
+import '../../../core/constants/app_spacing.dart';
 import 'package:brainforge/core/router/app_router.dart';
-import 'package:brainforge/core/theme/app_theme.dart';
-import 'package:brainforge/data/models/quest_model.dart';
-import 'package:brainforge/presentation/screens/quest_board/quest_board_provider.dart';
-import 'package:brainforge/presentation/screens/quest_board/quest_card.dart';
+import '../../../core/theme/app_theme.dart';
+import '../../../data/models/quest_model.dart';
+import 'quest_board_provider.dart';
+import 'quest_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -57,7 +57,7 @@ class _QuestBoardContent extends StatelessWidget {
           if ((groups[section] ?? []).isNotEmpty) ...[
             _SectionHeader(timeOfDay: section),
             const SizedBox(height: AppSpacing.sm),
-            ...((groups[section] ?? []).map(
+            ...(groups[section] ?? []).map(
               (quest) => Padding(
                 padding: const EdgeInsets.only(bottom: AppSpacing.md),
                 child: QuestCard(

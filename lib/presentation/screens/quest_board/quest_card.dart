@@ -1,7 +1,7 @@
-import 'package:brainforge/core/constants/app_spacing.dart';
-import 'package:brainforge/core/theme/app_theme.dart';
-import 'package:brainforge/data/models/quest_model.dart';
-import 'package:brainforge/presentation/screens/quest_board/quest_board_provider.dart';
+import '../../../core/constants/app_spacing.dart';
+import '../../../core/theme/app_theme.dart';
+import '../../../data/models/quest_model.dart';
+import 'quest_board_provider.dart';
 import 'package:flutter/material.dart';
 
 /// A visual quest card for the Quest Board.
@@ -187,7 +187,6 @@ class _CardContent extends StatelessWidget {
         ),
       ),
     );
-  }
 }
 
 class _XpBadge extends StatelessWidget {

@@ -1,5 +1,5 @@
-import 'package:brainforge/data/models/quest_model.dart';
-import 'package:brainforge/data/repositories/quest_repository_impl.dart';
+import '../../../data/models/quest_model.dart';
+import '../../../data/repositories/quest_repository_impl.dart';
 import 'package:brainforge/domain/auth/auth_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';

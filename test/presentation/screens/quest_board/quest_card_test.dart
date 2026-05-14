@@ -37,13 +37,12 @@ AuthStateNotifier _stubAuth(Ref ref) {
   final firestore = MockFirebaseFirestore();
   // ignore: unnecessary_lambdas
   when(() => auth.authStateChanges()).thenAnswer((_) => const Stream.empty());
-  final notifier = AuthStateNotifier(auth, firestore);
-  notifier.state = const AuthState(
-    status: AuthStatus.authenticated,
-    role: UserRole.student,
-    uid: 'child-1',
-  );
-  return notifier;
+  return AuthStateNotifier(auth, firestore)
+    ..state = const AuthState(
+      status: AuthStatus.authenticated,
+      role: UserRole.student,
+      uid: 'child-1',
+    );
 }
 
 Widget _wrap(Widget child) => ProviderScope(
@@ -53,10 +52,9 @@ Widget _wrap(Widget child) => ProviderScope(
 
 void main() {
   testWidgets('active quest renders title and XP badge', (tester) async {
-    bool tapped = false;
     await tester.pumpWidget(
       _wrap(
-        QuestCard(quest: _quest(), onTap: () => tapped = true),
+        QuestCard(quest: _quest(), onTap: () {}),
       ),
     );
     expect(find.text('Solve equations'), findsOneWidget);
@@ -64,7 +62,7 @@ void main() {
   });
 
   testWidgets('active quest is tappable', (tester) async {
-    bool tapped = false;
+    var tapped = false;
     await tester.pumpWidget(
       _wrap(QuestCard(quest: _quest(), onTap: () => tapped = true)),
     );
