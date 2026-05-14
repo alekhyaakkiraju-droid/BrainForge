@@ -102,7 +102,6 @@ void main() {
     await tester.pumpWidget(
       _wrap(
         const QuestDetailScreen(questId: 'q1'),
-        providerState: const AsyncValue.loading(),
       ),
     );
 
@@ -207,7 +206,7 @@ void main() {
   });
 
   testWidgets('interaction step shows "Done! ✓" button', (tester) async {
-    final interactionStep = QuestStepModel(
+    final interactionStep = const QuestStepModel(
       id: 's1',
       questId: 'q1',
       stepNumber: 1,
@@ -236,7 +235,7 @@ void main() {
     expect(find.textContaining('Done!'), findsOneWidget);
   });
 
-  testWidgets('router navigates back to quest board on complete', (tester) async {
+  testWidgets('navigates to quest board on complete', (tester) async {
     final router = GoRouter(
       routes: [
         GoRoute(

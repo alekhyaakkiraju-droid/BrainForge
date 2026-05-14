@@ -2,7 +2,7 @@ import 'package:brainforge/data/models/quest_step_model.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
-  QuestStepModel _make({
+  QuestStepModel make({
     String id = 's1',
     String type = 'multiple_choice',
     List<String> options = const ['A', 'B', 'C'],
@@ -55,7 +55,7 @@ void main() {
 
   group('QuestStepModel.toJson', () {
     test('round-trips through fromJson', () {
-      final original = _make();
+      final original = make();
       final roundTripped = QuestStepModel.fromJson(original.toJson());
 
       expect(roundTripped.id, original.id);
@@ -68,19 +68,19 @@ void main() {
   group('QuestStepModel.isCorrect', () {
     test('returns true when answer matches correctAnswer case-insensitively',
         () {
-      final step = _make(correctAnswer: 'Paris');
+      final step = make(correctAnswer: 'Paris');
       expect(step.isCorrect('paris'), isTrue);
       expect(step.isCorrect('PARIS'), isTrue);
       expect(step.isCorrect(' Paris '), isTrue);
     });
 
     test('returns false for a wrong answer', () {
-      final step = _make(correctAnswer: 'Paris');
+      final step = make(correctAnswer: 'Paris');
       expect(step.isCorrect('London'), isFalse);
     });
 
     test('returns true for any answer when correctAnswer is null', () {
-      final step = _make(correctAnswer: null);
+      final step = make(correctAnswer: null);
       expect(step.isCorrect('anything'), isTrue);
       expect(step.isCorrect(''), isTrue);
     });

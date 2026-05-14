@@ -1,11 +1,12 @@
-import 'package:brainforge/data/models/quest_model.dart';
-import 'package:brainforge/data/models/quest_progress_model.dart';
-import 'package:brainforge/data/models/quest_step_model.dart';
-import 'package:brainforge/data/repositories/quest_progress_repository_impl.dart';
-import 'package:brainforge/data/repositories/quest_repository_impl.dart';
-import 'package:brainforge/data/repositories/quest_step_repository_impl.dart';
-import 'package:brainforge/domain/auth/auth_state.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+import '../../../data/models/quest_model.dart';
+import '../../../data/models/quest_progress_model.dart';
+import '../../../data/models/quest_step_model.dart';
+import '../../../data/repositories/quest_progress_repository_impl.dart';
+import '../../../data/repositories/quest_repository_impl.dart';
+import '../../../data/repositories/quest_step_repository_impl.dart';
+import '../../../domain/auth/auth_state.dart';
 
 /// The loaded quest detail state — null until initialise() completes.
 class QuestDetailState {
@@ -29,7 +30,8 @@ class QuestDetailState {
 }
 
 /// Manages loading quest data, tracking step progress, and saving to Firestore.
-class QuestDetailNotifier extends AutoDisposeNotifier<AsyncValue<QuestDetailState>> {
+class QuestDetailNotifier
+    extends AutoDisposeNotifier<AsyncValue<QuestDetailState>> {
   @override
   AsyncValue<QuestDetailState> build() => const AsyncValue.loading();
 

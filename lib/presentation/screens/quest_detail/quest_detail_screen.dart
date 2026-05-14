@@ -1,13 +1,14 @@
 import 'dart:async';
 
-import 'package:brainforge/core/constants/app_spacing.dart';
-import 'package:brainforge/core/router/app_router.dart';
-import 'package:brainforge/core/theme/app_theme.dart';
-import 'package:brainforge/data/models/quest_step_model.dart';
-import 'package:brainforge/presentation/screens/quest_detail/quest_detail_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+
+import '../../../core/constants/app_spacing.dart';
+import '../../../core/router/app_router.dart';
+import '../../../core/theme/app_theme.dart';
+import '../../../data/models/quest_step_model.dart';
+import 'quest_detail_provider.dart';
 
 class QuestDetailScreen extends ConsumerStatefulWidget {
   const QuestDetailScreen({required this.questId, super.key});
@@ -66,7 +67,7 @@ class _QuestDetailScreenState extends ConsumerState<QuestDetailScreen>
     int stepIndex,
   ) async {
     if (!step.isCorrect(answer)) {
-      setState(() => _errorMessage = "Not quite — give it another try! 🌟");
+      setState(() => _errorMessage = 'Not quite — give it another try! 🌟');
       return;
     }
 
@@ -397,7 +398,6 @@ class _TextInput extends StatelessWidget {
           hintText: 'Type your answer',
         ),
         style: Theme.of(context).textTheme.bodyLarge,
-        textCapitalization: TextCapitalization.none,
       );
 }
 
@@ -558,7 +558,9 @@ class _QuestCompleteView extends StatelessWidget {
                     backgroundColor: AppColors.primary,
                     foregroundColor: Colors.white,
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(AppSpacing.buttonRadius),
+                      borderRadius: BorderRadius.circular(
+                        AppSpacing.buttonRadius,
+                      ),
                     ),
                   ),
                   child: Text(

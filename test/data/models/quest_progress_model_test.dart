@@ -2,7 +2,7 @@ import 'package:brainforge/data/models/quest_progress_model.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
-  QuestProgressModel _make({
+  QuestProgressModel make({
     String profileId = 'u1',
     String questId = 'q1',
     List<int> completed = const [],
@@ -16,28 +16,28 @@ void main() {
 
   group('QuestProgressModel.docId', () {
     test('combines profileId and questId with underscore', () {
-      expect(_make(profileId: 'abc', questId: 'xyz').docId, 'abc_xyz');
+      expect(make(profileId: 'abc', questId: 'xyz').docId, 'abc_xyz');
     });
   });
 
   group('QuestProgressModel.nextStepIndex', () {
     test('is 0 when no steps completed', () {
-      expect(_make().nextStepIndex, 0);
+      expect(make().nextStepIndex, 0);
     });
 
     test('equals the number of completed steps', () {
-      expect(_make(completed: [0, 1, 2]).nextStepIndex, 3);
+      expect(make(completed: [0, 1, 2]).nextStepIndex, 3);
     });
   });
 
   group('QuestProgressModel.withStepCompleted', () {
     test('appends the step index', () {
-      final updated = _make(completed: [0]).withStepCompleted(1);
+      final updated = make(completed: [0]).withStepCompleted(1);
       expect(updated.completedStepIndices, [0, 1]);
     });
 
     test('preserves profileId and questId', () {
-      final base = _make(profileId: 'p', questId: 'q');
+      final base = make(profileId: 'p', questId: 'q');
       final updated = base.withStepCompleted(0);
       expect(updated.profileId, 'p');
       expect(updated.questId, 'q');
