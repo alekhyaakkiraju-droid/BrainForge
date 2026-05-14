@@ -123,6 +123,13 @@ class _QuestDetailScreenState extends ConsumerState<QuestDetailScreen>
           if (state.steps.isEmpty) {
             return const _NoStepsView();
           }
+          if (state.isComplete) {
+            return _QuestCompleteView(
+              questTitle: state.quest.title,
+              xpReward: state.quest.xpReward,
+              onReturn: _navigateToQuestBoard,
+            );
+          }
           final step = state.steps[state.currentStepIndex];
           return Stack(
             children: [

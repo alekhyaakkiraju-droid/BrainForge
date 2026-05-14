@@ -47,7 +47,7 @@ class QuestDetailNotifier
       final progressRepo = ref.read(questProgressRepositoryProvider);
 
       final quest = await questRepo.getById(questId);
-      if (quest == null) throw StateError('Quest $questId not found.');
+      if (quest == null) throw Exception('Quest \$questId not found.');
 
       final steps = await stepRepo.getStepsForQuest(questId);
 

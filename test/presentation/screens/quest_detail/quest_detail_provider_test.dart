@@ -92,6 +92,17 @@ void main() {
   late MockQuestStepRepository mockStepRepo;
   late MockQuestProgressRepository mockProgressRepo;
 
+  setUpAll(() {
+    registerFallbackValue(
+      QuestProgressModel(
+        profileId: 'u1',
+        questId: 'q1',
+        completedStepIndices: const [],
+        updatedAt: DateTime(2026),
+      ),
+    );
+  });
+
   setUp(() {
     mockQuestRepo = MockQuestRepository();
     mockStepRepo = MockQuestStepRepository();
