@@ -147,6 +147,9 @@ void main() {
     test('auto-resume fires after 2 minutes of pause', () async {
       fakeAsync((fake) {
         final container = _makeContainer(mockSessionRepo);
+        // Listen to prevent auto-dispose during fakeAsync advancement.
+        final sub = container.listen(timerProvider, (_, __) {});
+        addTearDown(sub.close);
         addTearDown(container.dispose);
 
         container.read(timerProvider.notifier).start(15);
