@@ -157,24 +157,32 @@ export async function handleChildSignIn(
   return { customToken };
 }
 
-export const createChildAccount = onCall(async (request) => {
-  if (!request.auth) {
-    throw new HttpsError("unauthenticated", "Authentication required.");
+// enforceAppCheck rejects requests missing a valid App Check token with HTTP
+// 401 before the handler runs — protecting child data from API abuse.
+export const createChildAccount = onCall(
+  { enforceAppCheck: true },
+  async (request) => {
+    if (!request.auth) {
+      throw new HttpsError("unauthenticated", "Authentication required.");
+    }
+
+    return handleCreateChildAccount(
+      request.auth.uid,
+      Boolean(request.auth.token.email_verified),
+      request.data as CreateChildInput,
+      admin.firestore(),
+      admin.auth()
+    );
   }
+);
 
-  return handleCreateChildAccount(
-    request.auth.uid,
-    Boolean(request.auth.token.email_verified),
-    request.data as CreateChildInput,
-    admin.firestore(),
-    admin.auth()
-  );
-});
-
-export const childSignIn = onCall(async (request) => {
-  return handleChildSignIn(
-    request.data as ChildSignInInput,
-    admin.firestore(),
-    admin.auth()
-  );
-});
+export const childSignIn = onCall(
+  { enforceAppCheck: true },
+  async (request) => {
+    return handleChildSignIn(
+      request.data as ChildSignInInput,
+      admin.firestore(),
+      admin.auth()
+    );
+  }
+);
