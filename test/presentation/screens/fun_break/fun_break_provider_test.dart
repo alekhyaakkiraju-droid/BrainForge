@@ -59,7 +59,7 @@ void main() {
     });
 
     test('progress is 1 when countdown reaches 0', () {
-      final state = FunBreakState(
+      final state = const FunBreakState(
         activity: BreakActivity.breathing,
         remainingSeconds: 0,
         canReturn: true,
@@ -101,7 +101,7 @@ void main() {
         final container = _makeContainer(mockSessionRepo);
         addTearDown(container.dispose);
 
-        fake.elapse(Duration(seconds: kBreakDurationSeconds + 1));
+        fake.elapse(const Duration(seconds: kBreakDurationSeconds + 1));
 
         expect(container.read(funBreakProvider).canReturn, isTrue);
       });
@@ -112,7 +112,7 @@ void main() {
         final container = _makeContainer(mockSessionRepo);
         addTearDown(container.dispose);
 
-        fake.elapse(Duration(seconds: kBreakDurationSeconds + 1));
+        fake.elapse(const Duration(seconds: kBreakDurationSeconds + 1));
 
         verify(() => mockSessionRepo.save(any())).called(greaterThan(0));
       });

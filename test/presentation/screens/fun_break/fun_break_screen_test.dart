@@ -89,7 +89,7 @@ void main() {
     await tester.pumpWidget(
       _wrap(
         const FunBreakScreen(),
-        funBreakState: _makingBreakState(remaining: 180),
+        funBreakState: _makingBreakState(),
       ),
     );
 
@@ -126,9 +126,7 @@ void main() {
     await tester.pumpWidget(
       _wrap(
         const FunBreakScreen(),
-        funBreakState: _makingBreakState(
-          activity: BreakActivity.breathing,
-        ),
+        funBreakState: _makingBreakState(),
       ),
     );
 
@@ -150,7 +148,7 @@ void main() {
     await tester.pumpWidget(
       _wrap(
         const FunBreakScreen(),
-        funBreakState: _makingBreakState(canReturn: false),
+        funBreakState: _makingBreakState(),
       ),
     );
 

@@ -1,9 +1,10 @@
 import 'dart:async';
 
-import 'package:brainforge/data/models/session_model.dart';
-import 'package:brainforge/data/repositories/session_repository_impl.dart';
-import 'package:brainforge/domain/auth/auth_state.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+import '../../../data/models/session_model.dart';
+import '../../../data/repositories/session_repository_impl.dart';
+import '../../../domain/auth/auth_state.dart';
 
 // ── Activities ─────────────────────────────────────────────────────────────
 
@@ -98,7 +99,9 @@ class FunBreakNotifier extends AutoDisposeNotifier<FunBreakState> {
       id: sessionId,
       profileId: profileId,
       startedAt:
-          DateTime.now().subtract(const Duration(seconds: kBreakDurationSeconds)),
+          DateTime.now().subtract(
+            const Duration(seconds: kBreakDurationSeconds),
+          ),
       endedAt: DateTime.now(),
       durationSeconds: kBreakDurationSeconds,
       wasCompleted: true,

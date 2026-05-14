@@ -1,13 +1,14 @@
 import 'dart:async';
 import 'dart:math';
 
-import 'package:brainforge/core/constants/app_spacing.dart';
-import 'package:brainforge/core/router/app_router.dart';
-import 'package:brainforge/core/theme/app_theme.dart';
-import 'package:brainforge/presentation/screens/fun_break/fun_break_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+
+import '../../../core/constants/app_spacing.dart';
+import '../../../core/router/app_router.dart';
+import '../../../core/theme/app_theme.dart';
+import 'fun_break_provider.dart';
 
 /// Full-screen mandatory fun break — shown after every timed session.
 ///
@@ -46,7 +47,7 @@ class FunBreakScreen extends ConsumerWidget {
   }
 }
 
-// ── Header ────────────────────────────────────────────────────────────────────
+// ── Header ──────────────────────────────────────────────────────────────────
 
 class _BreakHeader extends StatelessWidget {
   const _BreakHeader({required this.breakState});
@@ -97,7 +98,7 @@ class _BreakHeader extends StatelessWidget {
       );
 }
 
-// ── Activity tabs ─────────────────────────────────────────────────────────────
+// ── Activity tabs ───────────────────────────────────────────────────────────
 
 class _ActivityTabs extends StatelessWidget {
   const _ActivityTabs({required this.selected, required this.onSelect});
@@ -164,9 +165,9 @@ class _TabButton extends StatelessWidget {
       );
 }
 
-// ── Breathing exercise ────────────────────────────────────────────────────────
+// ── Breathing exercise ──────────────────────────────────────────────────────
 
-/// Animated expanding/contracting circle guides the child through 4-4 breathing.
+/// Animated circle guides the child through 4-4 breathing.
 class _BreathingActivity extends StatefulWidget {
   const _BreathingActivity();
 
@@ -190,7 +191,7 @@ class _BreathingActivityState extends State<_BreathingActivity>
       vsync: this,
       duration: const Duration(seconds: 4),
     )..addStatusListener(_onStatus);
-    _scale = Tween<double>(begin: 0.5, end: 1.0).animate(
+    _scale = Tween<double>(begin: 0.5, end: 1).animate(
       CurvedAnimation(parent: _controller, curve: Curves.easeInOut),
     );
     _controller.forward();
@@ -263,7 +264,7 @@ class _BreathingActivityState extends State<_BreathingActivity>
       );
 }
 
-// ── Dance prompt ──────────────────────────────────────────────────────────────
+// ── Dance prompt ────────────────────────────────────────────────────────────
 
 const _kDancePrompts = [
   '🕺  Do your best robot dance!',
@@ -359,7 +360,7 @@ class _DanceActivityState extends State<_DanceActivity>
       );
 }
 
-// ── Return button ─────────────────────────────────────────────────────────────
+// ── Return button ───────────────────────────────────────────────────────────
 
 class _ReturnButton extends ConsumerWidget {
   const _ReturnButton({required this.canReturn});
@@ -376,7 +377,7 @@ class _ReturnButton extends ConsumerWidget {
             onPressed: canReturn
                 ? () {
                     ref.invalidate(funBreakProvider);
-                    unawaited(context.go(AppRoutes.questBoard));
+                    context.go(AppRoutes.questBoard);
                   }
                 : null,
             style: ElevatedButton.styleFrom(
@@ -390,7 +391,9 @@ class _ReturnButton extends ConsumerWidget {
             child: Text(
               canReturn ? 'Back to Quests! 🚀' : 'Almost there…',
               style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    color: canReturn ? Colors.white : AppColors.onSurfaceVariant,
+                    color: canReturn
+                        ? Colors.white
+                        : AppColors.onSurfaceVariant,
                     fontWeight: FontWeight.w700,
                   ),
             ),
@@ -399,41 +402,3 @@ class _ReturnButton extends ConsumerWidget {
       );
 }
 
-// ── ring painter (reused progress ring concept) ───────────────────────────────
-
-class _BreakRingPainter extends CustomPainter {
-  const _BreakRingPainter({required this.progress});
-
-  final double progress;
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final center = Offset(size.width / 2, size.height / 2);
-    final radius = (size.width / 2) - 8;
-    const strokeWidth = 12.0;
-
-    canvas.drawCircle(
-      center,
-      radius,
-      Paint()
-        ..color = AppColors.scienceSparkLight
-        ..style = PaintingStyle.stroke
-        ..strokeWidth = strokeWidth,
-    );
-
-    canvas.drawArc(
-      Rect.fromCircle(center: center, radius: radius),
-      -pi / 2,
-      2 * pi * progress,
-      false,
-      Paint()
-        ..color = AppColors.scienceSpark
-        ..style = PaintingStyle.stroke
-        ..strokeWidth = strokeWidth
-        ..strokeCap = StrokeCap.round,
-    );
-  }
-
-  @override
-  bool shouldRepaint(_BreakRingPainter old) => old.progress != progress;
-}
