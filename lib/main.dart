@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import 'core/config/app_check_config.dart';
 import 'core/config/firebase_options.dart';
 import 'core/config/firestore_config.dart';
 import 'core/router/app_router.dart';
@@ -19,6 +20,9 @@ Future<void> main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+  // App Check must be activated after Firebase.initializeApp and before
+  // any Firestore / Cloud Functions calls so attestation tokens are attached.
+  await initAppCheck();
   await configureFirestore();
 
   runApp(const ProviderScope(child: BrainForgeApp()));
