@@ -1,5 +1,4 @@
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
@@ -14,7 +13,6 @@ import '../../presentation/screens/badges/badges_screen.dart';
 import '../../presentation/screens/fun_break/fun_break_screen.dart';
 import '../../presentation/screens/login/login_screen.dart';
 import '../../presentation/screens/mood/mood_checkin_screen.dart';
-import '../../presentation/screens/placeholder_screen.dart';
 import '../../presentation/screens/profile/parent_settings_screen.dart';
 import '../../presentation/screens/profile/profile_screen.dart';
 import '../../presentation/screens/progress/progress_map_screen.dart';
