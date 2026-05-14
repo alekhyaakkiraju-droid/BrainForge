@@ -71,15 +71,15 @@ void main() {
 
   testWidgets('renders the error-builder rocket icon when Lottie asset missing',
       (tester) async {
-    await tester.pumpWidget(
-      _wrapWithRouter(const StartRitualScreen(questId: 'q-1')),
-    );
-    // Multiple pumps allow the async Lottie asset load to fail and call
-    // errorBuilder — a single pump is not enough.
+    // runAsync lets the real async asset load happen so the asset-not-found
+    // error is thrown and Lottie calls errorBuilder.
+    await tester.runAsync(() async {
+      await tester.pumpWidget(
+        _wrapWithRouter(const StartRitualScreen(questId: 'q-1')),
+      );
+      await Future<void>.delayed(const Duration(milliseconds: 200));
+    });
     await tester.pump();
-    await tester.pump(const Duration(milliseconds: 100));
-    await tester.pump(const Duration(milliseconds: 100));
-    // The Lottie.asset errorBuilder shows a rocket icon when asset is absent.
     expect(find.byIcon(Icons.rocket_launch_rounded), findsOneWidget);
   });
 
