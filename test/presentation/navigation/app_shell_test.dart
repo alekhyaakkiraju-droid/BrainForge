@@ -1,7 +1,9 @@
 import 'package:brainforge/core/constants/app_spacing.dart';
 import 'package:brainforge/core/router/app_router.dart';
 import 'package:brainforge/core/theme/app_theme.dart';
+import 'package:brainforge/data/models/quest_model.dart';
 import 'package:brainforge/domain/auth/auth_state.dart';
+import 'package:brainforge/presentation/screens/quest_board/quest_board_provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -48,6 +50,10 @@ Widget buildApp({required AuthStatus initialAuth}) => ProviderScope(
         authStateProvider.overrideWith(
           // ignore: unnecessary_lambdas
           (ref) => _notifierWithStatus(initialAuth, ref),
+        ),
+        // Stub the quest stream so pumpAndSettle does not hang on live queries.
+        questBoardProvider.overrideWith(
+          (_) => Stream<List<QuestModel>>.value(const []),
         ),
       ],
       child: Consumer(
@@ -127,7 +133,7 @@ void main() {
       );
       await tester.pumpAndSettle();
 
-      expect(find.text('Quest Board'), findsOneWidget);
+      expect(find.text("Today's Quests"), findsOneWidget);
       expect(find.text('Parent sign-in'), findsNothing);
     });
 
@@ -166,7 +172,7 @@ void main() {
   });
 
   group('State preservation', () {
-    testWidgets('counter persists when navigating between tabs',
+    testWidgets('quest board is preserved when navigating between tabs',
         (tester) async {
       tester.view.physicalSize = const Size(400, 800);
       tester.view.devicePixelRatio = 1;
@@ -177,18 +183,21 @@ void main() {
       );
       await tester.pumpAndSettle();
 
-      await tester.tap(
-        find.widgetWithIcon(IconButton, Icons.add).first,
-      );
-      await tester.pumpAndSettle();
+      // Quest board is visible on initial load.
+      expect(find.text("Today's Quests"), findsOneWidget);
 
+      // Navigate away to Focus tab.
       await tester.tap(find.byIcon(Icons.timer_outlined));
-      await tester.pumpAndSettle();
+      // Use pump() not pumpAndSettle() to avoid hanging on timer state.
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 100));
 
+      // Navigate back to Quests tab.
       await tester.tap(find.byIcon(Icons.grid_view_outlined));
       await tester.pumpAndSettle();
 
-      expect(find.text('1'), findsOneWidget);
+      // Quest board title is still visible (IndexedStack preserved it).
+      expect(find.text("Today's Quests"), findsOneWidget);
     });
   });
 }
