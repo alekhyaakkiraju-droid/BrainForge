@@ -364,6 +364,69 @@ describe('classAggregates/{classId}', () => {
   });
 });
 
+// ── Quest progress ────────────────────────────────────────────────────────────
+
+describe('questProgress/{progressId}', () => {
+  const validProgress = {
+    profileId: STUDENT_UID,
+    questId: 'quest-1',
+    completedStepIndices: [0, 1],
+  };
+
+  beforeEach(async () => {
+    await testEnv.withSecurityRulesDisabled(async (ctx) => {
+      const db = ctx.firestore();
+      await db.collection('users').doc(STUDENT_UID).set({ parentId: PARENT_UID, role: 'student' });
+    });
+  });
+
+  it('TEST-022: student can create their own quest progress', async () => {
+    await assertSucceeds(
+      studentCtx()
+        .firestore()
+        .collection('questProgress')
+        .doc(`${STUDENT_UID}_quest-1`)
+        .set(validProgress)
+    );
+  });
+
+  it('TEST-023: student cannot create progress for another student', async () => {
+    await assertFails(
+      studentCtx()
+        .firestore()
+        .collection('questProgress')
+        .doc(`${OTHER_STUDENT_UID}_quest-1`)
+        .set({ ...validProgress, profileId: OTHER_STUDENT_UID })
+    );
+  });
+
+  it('TEST-024: parent can read their child\'s progress', async () => {
+    await testEnv.withSecurityRulesDisabled(async (ctx) => {
+      await ctx
+        .firestore()
+        .collection('questProgress')
+        .doc(`${STUDENT_UID}_quest-1`)
+        .set(validProgress);
+    });
+    await assertSucceeds(
+      parentCtx()
+        .firestore()
+        .collection('questProgress')
+        .doc(`${STUDENT_UID}_quest-1`)
+        .get()
+    );
+  });
+
+  it('TEST-025: parent cannot write quest progress', async () => {
+    await assertFails(
+      parentCtx()
+        .firestore()
+        .collection('questProgress')
+        .doc(`${STUDENT_UID}_quest-1`)
+        .set({ ...validProgress, profileId: STUDENT_UID })
+    );
+  });
+});
 // ── Audit logs (immutability) ─────────────────────────────────────────────────
 
 describe('auditLogs/{logId}', () => {
@@ -381,14 +444,12 @@ describe('auditLogs/{logId}', () => {
     });
   });
 
-  it('TEST-022: signed-in user can create an audit log entry', async () => {
-    await assertSucceeds(
+  it('TEST-026: signed-in user can create an audit log entry', async () => {    await assertSucceeds(
       parentCtx().firestore().collection('auditLogs').doc().set(logEntry)
     );
   });
 
-  it('TEST-023: parent cannot update an audit log entry', async () => {
-    await assertFails(
+  it('TEST-027: parent cannot update an audit log entry', async () => {    await assertFails(
       parentCtx()
         .firestore()
         .collection('auditLogs')
@@ -397,8 +458,7 @@ describe('auditLogs/{logId}', () => {
     );
   });
 
-  it('TEST-024: student cannot update an audit log entry', async () => {
-    await assertFails(
+  it('TEST-028: student cannot update an audit log entry', async () => {    await assertFails(
       studentCtx()
         .firestore()
         .collection('auditLogs')
@@ -407,20 +467,17 @@ describe('auditLogs/{logId}', () => {
     );
   });
 
-  it('TEST-025: parent cannot delete an audit log entry', async () => {
-    await assertFails(
+  it('TEST-029: parent cannot delete an audit log entry', async () => {    await assertFails(
       parentCtx().firestore().collection('auditLogs').doc('log-1').delete()
     );
   });
 
-  it('TEST-026: student cannot delete an audit log entry', async () => {
-    await assertFails(
+  it('TEST-030: student cannot delete an audit log entry', async () => {    await assertFails(
       studentCtx().firestore().collection('auditLogs').doc('log-1').delete()
     );
   });
 
-  it('TEST-027: unauthenticated user cannot create an audit log entry', async () => {
-    await assertFails(
+  it('TEST-031: unauthenticated user cannot create an audit log entry', async () => {    await assertFails(
       testEnv
         .unauthenticatedContext()
         .firestore()
