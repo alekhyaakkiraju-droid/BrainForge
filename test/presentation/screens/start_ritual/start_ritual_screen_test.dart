@@ -22,13 +22,12 @@ AuthStateNotifier _stubAuth(Ref ref) {
   final firestore = MockFirebaseFirestore();
   // ignore: unnecessary_lambdas
   when(() => auth.authStateChanges()).thenAnswer((_) => const Stream.empty());
-  final notifier = AuthStateNotifier(auth, firestore);
-  notifier.state = const AuthState(
-    status: AuthStatus.authenticated,
-    role: UserRole.student,
-    uid: 'child-1',
-  );
-  return notifier;
+  return AuthStateNotifier(auth, firestore)
+    ..state = const AuthState(
+      status: AuthStatus.authenticated,
+      role: UserRole.student,
+      uid: 'child-1',
+    );
 }
 
 /// Wraps [child] with a minimal GoRouter so [context.go] does not throw.
