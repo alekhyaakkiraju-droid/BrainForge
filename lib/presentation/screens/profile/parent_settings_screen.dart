@@ -225,7 +225,6 @@ class _ChildCard extends StatelessWidget {
                 label: 'Delete',
                 onPressed: onDelete,
                 color: AppColors.error,
-                size: ButtonSize.small,
               ),
             ],
           ),
