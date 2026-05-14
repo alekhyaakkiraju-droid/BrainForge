@@ -1,5 +1,4 @@
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
@@ -11,9 +10,9 @@ import '../../presentation/screens/auth/consent_screen.dart';
 import '../../presentation/screens/auth/email_verification_screen.dart';
 import '../../presentation/screens/auth/parent_signup_screen.dart';
 import '../../presentation/screens/badges/badges_screen.dart';
+import '../../presentation/screens/fun_break/fun_break_screen.dart';
 import '../../presentation/screens/login/login_screen.dart';
 import '../../presentation/screens/mood/mood_checkin_screen.dart';
-import '../../presentation/screens/placeholder_screen.dart';
 import '../../presentation/screens/profile/parent_settings_screen.dart';
 import '../../presentation/screens/profile/profile_screen.dart';
 import '../../presentation/screens/progress/progress_map_screen.dart';
@@ -122,11 +121,7 @@ final appRouterProvider = Provider<GoRouter>((ref) {
       ),
       GoRoute(
         path: AppRoutes.funBreak,
-        builder: (context, state) => const PlaceholderScreen(
-          routeName: 'Fun Break',
-          icon: Icons.sports_esports_rounded,
-          color: Color(0xFF00C9A7),
-        ),
+        builder: (context, state) => const FunBreakScreen(),
       ),
       GoRoute(
         path: AppRoutes.parentSettings,
