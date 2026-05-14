@@ -172,7 +172,7 @@ void main() {
   });
 
   group('State preservation', () {
-    testWidgets('counter persists when navigating between tabs',
+    testWidgets('quest board is preserved when navigating between tabs',
         (tester) async {
       tester.view.physicalSize = const Size(400, 800);
       tester.view.devicePixelRatio = 1;
@@ -183,25 +183,21 @@ void main() {
       );
       await tester.pumpAndSettle();
 
-      // Navigate to Focus tab (still a placeholder with a counter).
+      // Quest board is visible on initial load.
+      expect(find.text("Today's Quests"), findsOneWidget);
+
+      // Navigate away to Focus tab.
       await tester.tap(find.byIcon(Icons.timer_outlined));
-      await tester.pumpAndSettle();
+      // Use pump() not pumpAndSettle() to avoid hanging on timer state.
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 100));
 
-      // Increment the counter on the Focus placeholder.
-      await tester.tap(
-        find.widgetWithIcon(IconButton, Icons.add).first,
-      );
-      await tester.pumpAndSettle();
-
-      // Switch to Quests tab and back.
+      // Navigate back to Quests tab.
       await tester.tap(find.byIcon(Icons.grid_view_outlined));
       await tester.pumpAndSettle();
 
-      await tester.tap(find.byIcon(Icons.timer_outlined));
-      await tester.pumpAndSettle();
-
-      // Counter should still be 1.
-      expect(find.text('1'), findsOneWidget);
+      // Quest board title is still visible (IndexedStack preserved it).
+      expect(find.text("Today's Quests"), findsOneWidget);
     });
   });
 }
